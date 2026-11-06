@@ -9,7 +9,7 @@ global:
   # Attach these labels to any time series or alerts when communicating with
   # external systems (federation, remote storage, Alertmanager).
   external_labels:
-      monitor: 'scaphandre-monitor'
+      monitor: 'glasswing-power-monitor'
 
 # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
 rule_files:
@@ -28,12 +28,11 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
-  - job_name: 'scaphandre'
+  - job_name: 'glasswing-power'
          # metrics_path defaults to '/metrics'
          # scheme defaults to 'http'.
 
     static_configs:
-      - targets: ['scaphandre:8080']
+      - targets: ['glasswing-power:8080']
     fallback_scrape_protocol: PrometheusText0.0.4
-
 

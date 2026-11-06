@@ -297,7 +297,7 @@ impl Topology {
                 //In VMs there might be a missmatch betwen Sockets and Cores - see Issue#133 as a first fix we just map all cores that can't be mapped to the first
                 let socket = match socket_match {
                     Some(x) => x,
-                    None =>self.sockets.first_mut().expect("Trick: if you are running on a vm, do not forget to use --vm parameter invoking scaphandre at the command line")
+                    None =>self.sockets.first_mut().expect("Trick: if you are running on a vm, do not forget to use --vm parameter invoking glasswing-power at the command line")
                 };
 
                 if socket_id == &socket.id {

@@ -66,8 +66,8 @@ pub fn filter_qemu_cmdline(cmdline: &str) -> Option<String> {
     None
 }
 
-/// Returns scaphandre version.
-pub fn get_scaphandre_version() -> String {
+/// Returns glasswing-power version.
+pub fn get_glasswing_power_version() -> String {
     let mut version_parts = crate_version!().split('.');
     let major_version = version_parts.next().unwrap();
     let patch_version = version_parts.next().unwrap();

@@ -19,7 +19,7 @@ impl Exporter for QemuExporter {
     /// Runs [iterate()] in a loop.
     fn run(&mut self) {
         info!("Starting qemu exporter");
-        let path = "/var/lib/libvirt/scaphandre";
+        let path = "/var/lib/libvirt/glasswing-power";
         let cleaner_step = 120;
         let mut timer = time::Duration::from_secs(cleaner_step);
         loop {

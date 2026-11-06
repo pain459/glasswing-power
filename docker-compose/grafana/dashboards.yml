@@ -2,11 +2,11 @@ apiVersion: 1
 
 providers:
   # <string> an unique provider name. Required
-  - name: 'Scaphandre examples'
+  - name: 'Glasswing Power examples'
     # <int> Org id. Default to 1
     orgId: 1
     # <string> name of the dashboard folder.
-    folder: 'scaphandre'
+    folder: 'glasswing-power'
     # <string> provider type. Default to 'file'
     type: file
     # <bool> disable dashboard deletion
@@ -18,4 +18,3 @@ providers:
       path: /var/lib/grafana/dashboards
       # <bool> use folder names from filesystem to create folders in Grafana
       foldersFromFilesStructure: true
-

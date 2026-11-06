@@ -35,10 +35,10 @@ use std::time::Duration;
 #[cfg(target_os = "windows")]
 use std::ffi::OsString;
 
-// the struct below defines the main Scaphandre command-line interface
+// the struct below defines the main Glasswing Power command-line interface
 /// Extensible metrology agent for electricity consumption related metrics.
 #[derive(Parser)]
-#[command(author, version)]
+#[command(author, version, name = "glasswing-power")]
 struct Cli {
     /// The exporter module to use to output the energy consumption metrics
     #[command(subcommand)]
@@ -52,8 +52,8 @@ struct Cli {
     #[arg(long, default_value_t = false)]
     no_header: bool,
 
-    /// Tell Scaphandre that it's running in a virtual machine.
-    /// You should have another instance of Scaphandre running on the hypervisor (see docs).
+    /// Tell Glasswing Power that it's running in a virtual machine.
+    /// You should have another instance of Glasswing Power running on the hypervisor (see docs).
     #[arg(long, default_value_t = false)]
     vm: bool,
 
@@ -159,7 +159,7 @@ fn my_service_main(_arguments: Vec<OsString>) {
         }
     };
 
-    if let Ok(system_handler) = service_control_handler::register("scaphandre", event_handler) {
+    if let Ok(system_handler) = service_control_handler::register("glasswing-power", event_handler) {
         // Tell the system that the service is running now and run it
         match system_handler.set_service_status(start_status.clone()) {
             Ok(status_set) => {
@@ -186,13 +186,13 @@ fn my_service_main(_arguments: Vec<OsString>) {
                                 match system_handler.set_service_status(stop_status.clone()) {
                                     Ok(laststatus_set) => {
                                         println!(
-                                            "Scaphandre gracefully stopped: {:?}",
+                                            "Glasswing Power gracefully stopped: {:?}",
                                             laststatus_set
                                         );
                                     }
                                     Err(e) => {
                                         panic!(
-                                            "Couldn't set Stop status on scaphandre service: {:?}",
+                                            "Couldn't set Stop status on glasswing-power service: {:?}",
                                             e
                                         );
                                     }
@@ -218,7 +218,7 @@ fn my_service_main(_arguments: Vec<OsString>) {
 
 fn main() {
     #[cfg(target_os = "windows")]
-    match service_dispatcher::start("Scaphandre", ffi_service_main) {
+    match service_dispatcher::start("Glasswing Power", ffi_service_main) {
         Ok(_) => {}
         Err(e) => {
             println!("Couldn't start Windows service dispatcher. Got : {}", e);
@@ -240,7 +240,7 @@ fn parse_cli_and_run_exporter() {
     );
     let mut exporter = build_exporter(cli.exporter, &sensor);
     if !cli.no_header {
-        print_scaphandre_header(exporter.kind());
+        print_glasswing_power_header(exporter.kind());
     }
 
     exporter.run();
@@ -308,7 +308,7 @@ fn build_sensor(
                 rapl_sensor()
             }
             #[cfg(not(target_os = "linux"))]
-            panic!("Invalid sensor: Scaphandre's powercap_rapl only works on Linux")
+            panic!("Invalid sensor: Glasswing Power's powercap_rapl only works on Linux")
         }
         Some("msr") => {
             #[cfg(target_os = "windows")]
@@ -316,7 +316,7 @@ fn build_sensor(
                 msr_sensor_win()
             }
             #[cfg(not(target_os = "windows"))]
-            panic!("Invalid sensor: Scaphandre's msr only works on Windows")
+            panic!("Invalid sensor: Glasswing Power's msr only works on Windows")
         }
         Some(s) => panic!("Unknown sensor type {}", s),
         None => {
@@ -332,8 +332,8 @@ fn build_sensor(
     }
 }
 
-fn print_scaphandre_header(exporter_name: &str) {
-    let title = format!("Scaphandre {exporter_name} exporter");
+fn print_glasswing_power_header(exporter_name: &str) {
+    let title = format!("Glasswing Power {exporter_name} exporter");
     println!("{}", title.red().bold());
     println!("Sending ⚡ metrics");
 }
@@ -373,23 +373,17 @@ mod test {
                 ),
             };
         }
-        assert_shows_help(&["scaphandre", "--help"]);
+        assert_shows_help(&["glasswing-power", "--help"]);
         for cmd in SUBCOMMANDS {
-            assert_shows_help(&["scaphandre", cmd, "--help"]);
+            assert_shows_help(&["glasswing-power", cmd, "--help"]);
         }
     }
 }
 
 //  Copyright 2020 The scaphandre authors.
+//  Copyright 2026 pain459
 //
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
+//  Licensed under the MIT License.
 //  You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an "AS IS" BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//      https://opensource.org/licenses/MIT

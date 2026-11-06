@@ -30,7 +30,7 @@ impl PowercapRAPLSensor {
     ) -> PowercapRAPLSensor {
         let mut powercap_path = String::from("/sys/class/powercap");
         if virtual_machine {
-            powercap_path = String::from("/var/scaphandre");
+            powercap_path = String::from("/var/glasswing-power");
             if let Ok(val) = env::var("SCAPHANDRE_POWERCAP_PATH") {
                 powercap_path = val;
             }

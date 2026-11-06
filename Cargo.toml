@@ -1,13 +1,13 @@
 [package]
-name = "scaphandre"
+name = "glasswing-power"
 version = "1.0.2"
-authors = ["Benoit Petit <bpetit@hubblo.org>"]
+authors = ["Benoit Petit <bpetit@hubblo.org>", "pain459"]
 edition = "2024"
-license = "Apache-2.0"
+license = "MIT"
 description = "Electric power/energy consumption monitoring agent."
-repository = "https://github.com/hubblo-org/scaphandre"
+repository = "https://github.com/pain459/scaphandre"
 readme = "README.md"
-homepage = "https://scaphandre.hubblo.org"
+homepage = "https://github.com/pain459/scaphandre"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

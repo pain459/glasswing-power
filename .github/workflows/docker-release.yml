@@ -26,7 +26,7 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: |
-            hubblo/scaphandre
+            pain459/glasswing-power
           tags: |
             type=ref,event=branch
             type=semver,pattern={{version}}

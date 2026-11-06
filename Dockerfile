@@ -31,5 +31,5 @@ RUN apt-get update \
     && DEBIAN_FRONTEND="noninteractive" apt-get install -y ca-certificates tzdata libssl3 \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /app/target/release/scaphandre /usr/local/bin
-ENTRYPOINT ["/usr/local/bin/scaphandre"]
+COPY --from=builder /app/target/release/glasswing-power /usr/local/bin
+ENTRYPOINT ["/usr/local/bin/glasswing-power"]

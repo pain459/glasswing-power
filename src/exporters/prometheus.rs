@@ -77,7 +77,7 @@ impl Exporter for PrometheusExporter {
             "{}: Starting Prometheus exporter",
             Utc::now().format("%Y-%m-%dT%H:%M:%S")
         );
-        println!("Press CTRL-C to stop scaphandre");
+        println!("Press CTRL-C to stop glasswing-power");
         let socket_addr = SocketAddr::new(self.args.address, self.args.port);
         let metric_generator = MetricGenerator::new(
             self.topo.clone(), // improvement possible here: avoid cloning by adding a lifetime param to MetricGenerator

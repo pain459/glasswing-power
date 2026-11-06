@@ -24,7 +24,7 @@ use chrono::Utc;
 use std::collections::HashMap;
 use std::fmt;
 use std::time::Duration;
-use utils::get_scaphandre_version;
+use utils::get_glasswing_power_version;
 #[cfg(feature = "containers")]
 use {
     docker_sync::{Docker, container::Container},
@@ -198,7 +198,7 @@ impl MetricGenerator {
                 }
                 if !container_runtime {
                     warn!(
-                        "--containers was used but scaphandre couldn't connect to any container runtime."
+                        "--containers was used but glasswing-power couldn't connect to any container runtime."
                     );
                 }
             }
@@ -290,7 +290,7 @@ impl MetricGenerator {
             tags: vec!["scaphandre".to_string()],
             attributes: HashMap::new(),
             description: String::from("Version number of scaphandre represented as a float."),
-            metric_value: MetricValueType::Text(get_scaphandre_version()),
+            metric_value: MetricValueType::Text(get_glasswing_power_version()),
         });
 
         if let Some(metric_value) = self.topology.get_process_cpu_usage_percentage(myself.pid) {

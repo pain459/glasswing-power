@@ -1,12 +1,12 @@
 [book]
-title = "Scaphandre documentation"
+title = "Glasswing Power documentation"
 description = "Extensible and lightweight monitoring agent for energy consumption metrics"
-authors = ["Benoit Petit"]
+authors = ["Benoit Petit", "pain459"]
 language = "en"
 src = "docs_src"
 
 [build]
-build-dir = "../scaphandre-documentation/docs"
+build-dir = "../glasswing-power-documentation/docs"
 
 [rust]
 edition = "2024"

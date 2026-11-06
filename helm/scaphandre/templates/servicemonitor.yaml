@@ -2,14 +2,14 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "scaphandre.name" . }}-service-monitoring
+  name: {{ include "glasswing-power.name" . }}-service-monitoring
   {{- if .Values.serviceMonitor.namespace }}
   namespace: {{ .Values.serviceMonitor.namespace }}
   {{- else }}
   namespace: {{ .Release.Namespace }}
   {{- end }}
   labels:
-    app.kubernetes.io/name: {{ template "scaphandre.name" . }}
+    app.kubernetes.io/name: {{ template "glasswing-power.name" . }}
 spec:
   endpoints:
     - path: /metrics
@@ -24,5 +24,5 @@ spec:
       - {{ .Release.Namespace }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "scaphandre.name" . }}
+      app.kubernetes.io/name: {{ include "glasswing-power.name" . }}
 {{- end }}

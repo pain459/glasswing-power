@@ -173,7 +173,7 @@ impl Exporter for RiemannExporter {
             "{}: Starting Riemann exporter",
             Utc::now().format("%Y-%m-%dT%H:%M:%S")
         );
-        println!("Press CTRL-C to stop scaphandre");
+        println!("Press CTRL-C to stop glasswing-power");
 
         let dispatch_interval = Duration::from_secs(self.args.dispatch_interval);
         println!("Dispatch interval is {dispatch_interval:?}");

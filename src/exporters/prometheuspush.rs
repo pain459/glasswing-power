@@ -49,7 +49,7 @@ pub struct ExporterArgs {
     pub containers: bool,
 
     /// Job name to apply as a label for pushed metrics
-    #[arg(short, long, default_value_t = String::from("scaphandre"))]
+    #[arg(short, long, default_value_t = String::from("glasswing-power"))]
     pub job: String,
 
     /// Don't verify remote TLS certificate (works with --scheme="https")

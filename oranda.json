@@ -1,9 +1,9 @@
 {
     "build": {
-      "path_prefix": "scaphandre"
+      "path_prefix": "glasswing-power"
     },
     "project": {
-        "repository": "https://github.com/hubblo-org/scaphandre"    
+        "repository": "https://github.com/pain459/scaphandre"    
     },
     "styles": {
       "theme": "light",
@@ -11,9 +11,9 @@
     },
     "marketing": {
       "social": {
-        "image": "https://raw.githubusercontent.com/hubblo-org/scaphandre/dev/docs_src/scaphandre.cleaned.png",
-        "image_alt": "Hubblo's twitter/x account",
-        "twitter_account": "@HubbloOrg"
+        "image": "https://raw.githubusercontent.com/pain459/scaphandre/main/docs_src/scaphandre.cleaned.png",
+        "image_alt": "Glasswing Power",
+        "twitter_account": "@pain459"
       }
     },
     "components": {
@@ -23,10 +23,10 @@
           "cargo_dist": false,
           "package_managers": {
             "preferred": {
-              "crates.io": "cargo install scaphandre",
-              "DEB package": "dpkg -i scaphandre.X.deb",
-              "docker": "docker pull hubblo/scaphandre",
-              "RPM package": "rpm -ivh scaphandre.X.rpm"
+              "crates.io": "cargo install glasswing-power",
+              "DEB package": "dpkg -i glasswing-power.X.deb",
+              "docker": "docker pull pain459/glasswing-power",
+              "RPM package": "rpm -ivh glasswing-power.X.rpm"
             }
           }
       },

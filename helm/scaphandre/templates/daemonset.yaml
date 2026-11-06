@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: {{ template "scaphandre.name" . }}
+  name: {{ template "glasswing-power.name" . }}
   labels:
     {{- include "labels.common" . | nindent 4 }}
 spec:
@@ -9,26 +9,26 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ template "scaphandre.name" . }}
+      app.kubernetes.io/name: {{ template "glasswing-power.name" . }}
   template:
     metadata:
-      name: {{ template "scaphandre.name" . }}
+      name: {{ template "glasswing-power.name" . }}
       labels:
         {{- include "labels.common" . | nindent 8 }}
     spec:
       containers:
-      - name:  {{ template "scaphandre.name" . }}
+      - name:  {{ template "glasswing-power.name" . }}
         image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
         args:
-            {{- range $key, $value := .Values.scaphandre.args }}
+            {{- range $key, $value := .Values."glasswing-power".args }}
             {{- if $value }}
             - --{{ $key }}={{ $value }}
             {{- else }}
             - --{{ $key }}
             {{- end }}
             {{- end }}
-            - {{ .Values.scaphandre.command }}
-            {{- range $key, $value := .Values.scaphandre.extraArgs }}
+            - {{ .Values."glasswing-power".command }}
+            {{- range $key, $value := .Values."glasswing-power".extraArgs }}
             {{- if $value }}
             - --{{ $key }}={{ $value }}
             {{- else }}
@@ -36,9 +36,9 @@ spec:
             {{- end }}
             {{- end }}
         env:
-        {{- if .Values.scaphandre.rustBacktrace }}
+        {{- if .Values."glasswing-power".rustBacktrace }}
         - name: RUST_BACKTRACE
-          value: '{{ .Values.scaphandre.rustBacktrace }}'
+          value: '{{ .Values."glasswing-power".rustBacktrace }}'
         {{- end }}
         ports:
         - name: metrics
@@ -57,7 +57,7 @@ spec:
       securityContext:
         runAsUser: {{ .Values.securityContext.userID }}
         runAsGroup: {{ .Values.securityContext.userGroup }}
-      serviceAccountName: {{ template "scaphandre.name" . }}
+      serviceAccountName: {{ template "glasswing-power.name" . }}
       tolerations:
       # Tolerate all taints for observability
       - operator: "Exists"
