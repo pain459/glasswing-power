@@ -18,11 +18,14 @@ services:
       - type: bind
         source: "./dashboards/sample-dashboard.json"
         target: "/var/lib/grafana/dashboards/sample/sample-dashboard.json"
+      - type: bind
+        source: "./dashboards/power-cost-dashboard.json"
+        target: "/var/lib/grafana/dashboards/power-cost/power-cost-dashboard.json"
   scaphandre:
     image: hubblo/scaphandre
     privileged: true
     ports: 
-      - "8080:8080"
+      - "8081:8080"
     volumes:
       - type: bind
         source: /proc
