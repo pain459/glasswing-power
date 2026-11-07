@@ -10,8 +10,6 @@ pub struct Warp10Exporter {
     metric_generator: MetricGenerator,
     /// Warp10 client
     client: warp10::Client,
-    /// Warp10 auth token
-    write_token: String,
 
     step: Duration,
 }
@@ -50,8 +48,9 @@ const TOKEN_ENV_VAR: &str = "SCAPH_WARP10_WRITE_TOKEN";
 impl Exporter for Warp10Exporter {
     /// Control loop for self.iterate()
     fn run(&mut self) {
+        let runtime = tokio::runtime::Runtime::new().expect("failed to create tokio runtime");
         loop {
-            match self.iterate() {
+            match runtime.block_on(self.iterate()) {
                 Ok(res) => debug!("Result: {:?}", res),
                 Err(err) => error!("Failed ! {:?}", err),
             }
@@ -77,16 +76,19 @@ impl Warp10Exporter {
         let scheme = args.scheme;
         let host = args.host;
         let port = args.port;
-        let client = warp10::Client::new(&format!("{scheme}://{host}:{port}"))
-            .expect("warp10 Client could not be created");
         let write_token = args.write_token.unwrap_or_else(|| {
             std::env::var(TOKEN_ENV_VAR).unwrap_or_else(|_| panic!("No token found, you must provide either --write-token or the env var {TOKEN_ENV_VAR}"))
         });
 
+        let client = warp10::Client::builder()
+            .url(&format!("{scheme}://{host}:{port}"))
+            .write_token(&write_token)
+            .build()
+            .expect("warp10 Client could not be created");
+
         Warp10Exporter {
             metric_generator,
             client,
-            write_token,
             step: Duration::from_secs(args.step),
         }
     }
@@ -94,8 +96,8 @@ impl Warp10Exporter {
     /// Collects data from the Topology, creates warp10::Data objects containing the
     /// metric itself and some labels attaches, stores them in a vector and sends it
     /// to Warp10
-    pub fn iterate(&mut self) -> Result<Vec<warp10::Warp10Response>, warp10::Error> {
-        let writer = self.client.get_writer(self.write_token.clone());
+    pub async fn iterate(&mut self) -> Result<warp10::UpdateResponse, warp10::Error> {
+        let writer = self.client.get_writer();
         self.metric_generator
             .topology
             .proc_tracker
@@ -124,27 +126,7 @@ impl Warp10Exporter {
             ));
         }
 
-        let res = writer.post_sync(process_data)?;
-
-        let results = vec![res];
-
-        //if let Some(token) = read_token {
-        //let reader = client.get_reader(token.to_owned());
-        //let parameters = warp10::data::ParameterSet::new(
-        //"scaph_host_power_microwatts{}".to_string(),
-        //Format::Text,
-        //None, None, None,
-        //Some(String::from("now")), Some(String::from("-10")),
-        //None, None, None
-        //);
-        //let response = reader.get_sync(parameters);
-        //match response {
-        //Ok(resp) => warn!("response is: {:?}", resp),
-        //Err(err) => panic!("error is: {:?}", err)
-        //}
-        //}
-
-        Ok(results)
+        writer.post(process_data).await
     }
 }
 
