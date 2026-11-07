@@ -55,6 +55,7 @@ pub struct Metric {
     tags: Vec<String>,
     /// `attributes` used by exporters to better qualify the metric. In Prometheus context
     /// this is used as a metric tag (socket_id) : `scaph_self_socket_stats_nb{socket_id="0"} 2`.
+    /// Note: metric names use the `scaph_` prefix for backward compatibility with existing dashboards.
     attributes: HashMap<String, String>,
     /// `description` metric description and units used.
     description: String,
@@ -98,7 +99,7 @@ impl fmt::Debug for MetricValueType {
     }
 }
 
-/// An Exporter is what tells scaphandre when to collect metrics and how to export
+/// An Exporter is what tells glasswing-power when to collect metrics and how to export
 /// or expose them.
 /// Its basic role is to instanciate a Sensor, get the data the sensor has to offer
 /// and expose the data in the desired way. An exporter could either push the metrics
@@ -275,7 +276,7 @@ impl MetricGenerator {
         result
     }
 
-    /// Generate all scaphandre internal metrics.
+    /// Generate all glasswing-power internal metrics.
     fn gen_self_metrics(&mut self) {
         let myself = IProcess::myself(self.topology.get_proc_tracker()).unwrap();
 
@@ -287,9 +288,9 @@ impl MetricGenerator {
             hostname: self.hostname.clone(),
             state: String::from("ok"),
             timestamp: default_timestamp,
-            tags: vec!["scaphandre".to_string()],
+            tags: vec!["glasswing-power".to_string()],
             attributes: HashMap::new(),
-            description: String::from("Version number of scaphandre represented as a float."),
+            description: String::from("Version number of glasswing-power represented as a float."),
             metric_value: MetricValueType::Text(get_glasswing_power_version()),
         });
 
@@ -301,9 +302,9 @@ impl MetricGenerator {
                 timestamp: metric_value.timestamp,
                 hostname: self.hostname.clone(),
                 state: String::from("ok"),
-                tags: vec!["scaphandre".to_string()],
+                tags: vec!["glasswing-power".to_string()],
                 attributes: HashMap::new(),
-                description: format!("CPU time consumed by scaphandre, as {}", metric_value.unit),
+                description: format!("CPU time consumed by glasswing-power, as {}", metric_value.unit),
                 metric_value: MetricValueType::Text(metric_value.value),
             });
         }
@@ -316,7 +317,7 @@ impl MetricGenerator {
                 timestamp: default_timestamp,
                 hostname: self.hostname.clone(),
                 state: String::from("ok"),
-                tags: vec!["scaphandre".to_string()],
+                tags: vec!["glasswing-power".to_string()],
                 attributes: HashMap::new(),
                 description: format!("Total program size, measured in {}.", metric_value.unit),
                 metric_value: MetricValueType::IntUnsigned(
@@ -333,7 +334,7 @@ impl MetricGenerator {
                 hostname: self.hostname.clone(),
                 state: String::from("ok"),
                 timestamp: default_timestamp,
-                tags: vec!["scaphandre".to_string()],
+                tags: vec!["glasswing-power".to_string()],
                 attributes: HashMap::new(),
                 description: String::from("Resident set size, measured in bytes."),
                 metric_value: MetricValueType::IntUnsigned(
@@ -353,7 +354,7 @@ impl MetricGenerator {
             timestamp: default_timestamp,
             hostname: self.hostname.clone(),
             state: String::from("ok"),
-            tags: vec!["scaphandre".to_string()],
+            tags: vec!["glasswing-power".to_string()],
             attributes: HashMap::new(),
             description: String::from("Number of CPUStat traces stored for the host."),
             metric_value: MetricValueType::IntUnsigned(topo_stat_buffer_len as u64),
@@ -366,7 +367,7 @@ impl MetricGenerator {
             timestamp: default_timestamp,
             hostname: self.hostname.clone(),
             state: String::from("ok"),
-            tags: vec!["scaphandre".to_string()],
+            tags: vec!["glasswing-power".to_string()],
             attributes: HashMap::new(),
             description: String::from("Number of energy consumption Records stored for the host."),
             metric_value: MetricValueType::IntUnsigned(topo_record_buffer_len as u64),
@@ -379,7 +380,7 @@ impl MetricGenerator {
             timestamp: default_timestamp,
             hostname: self.hostname.clone(),
             state: String::from("ok"),
-            tags: vec!["scaphandre".to_string()],
+            tags: vec!["glasswing-power".to_string()],
             attributes: HashMap::new(),
             description: String::from("Number of processes monitored for the host."),
             metric_value: MetricValueType::IntUnsigned(topo_procs_len as u64),
@@ -396,7 +397,7 @@ impl MetricGenerator {
                 timestamp: default_timestamp,
                 hostname: self.hostname.clone(),
                 state: String::from("ok"),
-                tags: vec!["scaphandre".to_string()],
+                tags: vec!["glasswing-power".to_string()],
                 attributes: attributes.clone(),
                 description: String::from("Number of CPUStat traces stored for each socket"),
                 metric_value: MetricValueType::IntUnsigned(socket.stat_buffer.len() as u64),
@@ -409,7 +410,7 @@ impl MetricGenerator {
                 timestamp: default_timestamp,
                 hostname: self.hostname.clone(),
                 state: String::from("ok"),
-                tags: vec!["scaphandre".to_string()],
+                tags: vec!["glasswing-power".to_string()],
                 attributes: attributes.clone(),
                 description: String::from(
                     "Number of energy consumption Records stored for each socket",
@@ -427,7 +428,7 @@ impl MetricGenerator {
                     timestamp: default_timestamp,
                     hostname: self.hostname.clone(),
                     state: String::from("ok"),
-                    tags: vec!["scaphandre".to_string()],
+                    tags: vec!["glasswing-power".to_string()],
                     attributes: attributes.clone(),
                     description: String::from(
                         "Number of energy consumption Records stored for a Domain",
@@ -471,7 +472,7 @@ impl MetricGenerator {
                     timestamp: record.timestamp,
                     hostname: self.hostname.clone(),
                     state: String::from("ok"),
-                    tags: vec!["scaphandre".to_string()],
+                    tags: vec!["glasswing-power".to_string()],
                     attributes: attributes.clone(),
                     description: String::from(
                         "Energy measurement for the whole host, as extracted from the sensor, in microjoules.",
@@ -487,7 +488,7 @@ impl MetricGenerator {
                     timestamp: power.timestamp,
                     hostname: self.hostname.clone(),
                     state: String::from("ok"),
-                    tags: vec!["scaphandre".to_string()],
+                    tags: vec!["glasswing-power".to_string()],
                     attributes,
                     description: String::from("Power measurement on the whole host, in microwatts"),
                     metric_value: MetricValueType::Text(power.value),
@@ -502,7 +503,7 @@ impl MetricGenerator {
                 timestamp: metric_value[0].timestamp,
                 hostname: self.hostname.clone(),
                 state: String::from("ok"),
-                tags: vec!["scaphandre".to_string()],
+                tags: vec!["glasswing-power".to_string()],
                 attributes: HashMap::new(),
                 description: String::from("Load average on 1 minute."),
                 metric_value: MetricValueType::Text(metric_value[0].value.clone()),
@@ -514,7 +515,7 @@ impl MetricGenerator {
                 timestamp: metric_value[1].timestamp,
                 hostname: self.hostname.clone(),
                 state: String::from("ok"),
-                tags: vec!["scaphandre".to_string()],
+                tags: vec!["glasswing-power".to_string()],
                 attributes: HashMap::new(),
                 description: String::from("Load average on 5 minutes."),
                 metric_value: MetricValueType::Text(metric_value[1].value.clone()),
@@ -526,7 +527,7 @@ impl MetricGenerator {
                 timestamp: metric_value[2].timestamp,
                 hostname: self.hostname.clone(),
                 state: String::from("ok"),
-                tags: vec!["scaphandre".to_string()],
+                tags: vec!["glasswing-power".to_string()],
                 attributes: HashMap::new(),
                 description: String::from("Load average on 15 minutes."),
                 metric_value: MetricValueType::Text(metric_value[2].value.clone()),
@@ -540,7 +541,7 @@ impl MetricGenerator {
             timestamp: freq.timestamp,
             hostname: self.hostname.clone(),
             state: String::from("ok"),
-            tags: vec!["scaphandre".to_string()],
+            tags: vec!["glasswing-power".to_string()],
             attributes: HashMap::new(),
             description: format!("Global frequency of all the cpus. In {}", freq.unit),
             metric_value: MetricValueType::Text(freq.value),
@@ -554,7 +555,7 @@ impl MetricGenerator {
                 timestamp: metric.2.timestamp,
                 hostname: self.hostname.clone(),
                 state: String::from("ok"),
-                tags: vec!["scaphandre".to_string()],
+                tags: vec!["glasswing-power".to_string()],
                 attributes: metric.1,
                 description: metric.0,
                 metric_value: MetricValueType::Text(metric.2.value),
@@ -570,7 +571,7 @@ impl MetricGenerator {
             timestamp: metric_value.timestamp,
             hostname: self.hostname.clone(),
             state: String::from("ok"),
-            tags: vec!["scaphandre".to_string()],
+            tags: vec!["glasswing-power".to_string()],
             attributes: ram_attributes.clone(),
             description: String::from("Random Access Memory installed on the host, in bytes."),
             metric_value: MetricValueType::Text(metric_value.value),
@@ -583,7 +584,7 @@ impl MetricGenerator {
             timestamp: metric_value.timestamp,
             hostname: self.hostname.clone(),
             state: String::from("ok"),
-            tags: vec!["scaphandre".to_string()],
+            tags: vec!["glasswing-power".to_string()],
             attributes: ram_attributes.clone(),
             description: String::from(
                 "Random Access Memory available to be re-used on the host, in bytes.",
@@ -598,7 +599,7 @@ impl MetricGenerator {
             timestamp: metric_value.timestamp,
             hostname: self.hostname.clone(),
             state: String::from("ok"),
-            tags: vec!["scaphandre".to_string()],
+            tags: vec!["glasswing-power".to_string()],
             attributes: ram_attributes.clone(),
             description: String::from(
                 "Random Access Memory free to be used (not reused) on the host, in bytes.",
@@ -613,7 +614,7 @@ impl MetricGenerator {
             timestamp: metric_value.timestamp,
             hostname: self.hostname.clone(),
             state: String::from("ok"),
-            tags: vec!["scaphandre".to_string()],
+            tags: vec!["glasswing-power".to_string()],
             attributes: ram_attributes.clone(),
             description: String::from("Swap space free to be used on the host, in bytes."),
             metric_value: MetricValueType::Text(metric_value.value),
@@ -626,7 +627,7 @@ impl MetricGenerator {
             timestamp: metric_value.timestamp,
             hostname: self.hostname.clone(),
             state: String::from("ok"),
-            tags: vec!["scaphandre".to_string()],
+            tags: vec!["glasswing-power".to_string()],
             attributes: ram_attributes,
             description: String::from("Total swap space on the host, in bytes."),
             metric_value: MetricValueType::Text(metric_value.value),
@@ -652,7 +653,7 @@ impl MetricGenerator {
                     timestamp: metric_timestamp,
                     hostname: self.hostname.clone(),
                     state: String::from("ok"),
-                    tags: vec!["scaphandre".to_string()],
+                    tags: vec!["glasswing-power".to_string()],
                     attributes: attributes.clone(),
                     description: String::from("Socket related energy measurement in microjoules."),
                     metric_value: MetricValueType::Text(metric_value.clone()),
@@ -668,7 +669,7 @@ impl MetricGenerator {
                         timestamp: power.timestamp,
                         hostname: self.hostname.clone(),
                         state: String::from("ok"),
-                        tags: vec!["scaphandre".to_string()],
+                        tags: vec!["glasswing-power".to_string()],
                         attributes: attributes.clone(),
                         description: String::from(
                             "Power measurement relative to a CPU socket, in microwatts",
@@ -685,7 +686,7 @@ impl MetricGenerator {
                     timestamp: mmio.timestamp,
                     hostname: self.hostname.clone(),
                     state: String::from("ok"),
-                    tags: vec!["scaphandre".to_string()],
+                    tags: vec!["glasswing-power".to_string()],
                     attributes: attributes.clone(),
                     description: format!(
                         "Energy counter from RAPL mmio interface for Package-0 of CPU socket {}",
@@ -713,7 +714,7 @@ impl MetricGenerator {
                         hostname: self.hostname.clone(),
                         timestamp: metric_timestamp,
                         state: String::from("ok"),
-                        tags: vec!["scaphandre".to_string()],
+                        tags: vec!["glasswing-power".to_string()],
                         attributes: attributes.clone(),
                         description: String::from(
                             "Domain related energy measurement in microjoules.",
@@ -730,7 +731,7 @@ impl MetricGenerator {
                             hostname: self.hostname.clone(),
                             timestamp: power.timestamp,
                             state: String::from("ok"),
-                            tags: vec!["scaphandre".to_string()],
+                            tags: vec!["glasswing-power".to_string()],
                             attributes: attributes.clone(),
                             description: String::from(
                                 "Power measurement relative to a RAPL Domain, in microwatts",
@@ -751,7 +752,7 @@ impl MetricGenerator {
                             timestamp: mmio.timestamp,
                             hostname: self.hostname.clone(),
                             state: String::from("ok"),
-                            tags: vec!["scaphandre".to_string()],
+                            tags: vec!["glasswing-power".to_string()],
                             attributes: mmio_attributes,
                             description: format!(
                                 "Energy counter from RAPL mmio interface for the {} domain, socket {}.", domain.name, socket.id
@@ -775,7 +776,7 @@ impl MetricGenerator {
                 timestamp:  default_timestamp,
                 hostname: self.hostname.clone(),
                 state: String::from("ok"),
-                tags: vec!["scaphandre".to_string()],
+                tags: vec!["glasswing-power".to_string()],
                 attributes: HashMap::new(),
                 description: String::from("Number of forks that have occured since boot (number of processes to have existed so far)."),
                 metric_value: MetricValueType::IntUnsigned(metric_value),
@@ -790,7 +791,7 @@ impl MetricGenerator {
                 timestamp: default_timestamp,
                 hostname: self.hostname.clone(),
                 state: String::from("ok"),
-                tags: vec!["scaphandre".to_string()],
+                tags: vec!["glasswing-power".to_string()],
                 attributes: HashMap::new(),
                 description: String::from("Number of processes currently running."),
                 metric_value: MetricValueType::IntUnsigned(metric_value as u64),
@@ -805,7 +806,7 @@ impl MetricGenerator {
                 timestamp: default_timestamp,
                 hostname: self.hostname.clone(),
                 state: String::from("ok"),
-                tags: vec!["scaphandre".to_string()],
+                tags: vec!["glasswing-power".to_string()],
                 attributes: HashMap::new(),
                 description: String::from("Number of processes currently blocked waiting for I/O."),
                 metric_value: MetricValueType::IntUnsigned(metric_value as u64),
@@ -820,7 +821,7 @@ impl MetricGenerator {
                 timestamp: default_timestamp,
                 hostname: self.hostname.clone(),
                 state: String::from("ok"),
-                tags: vec!["scaphandre".to_string()],
+                tags: vec!["glasswing-power".to_string()],
                 attributes: HashMap::new(),
                 description: String::from("Number of context switches since boot."),
                 metric_value: MetricValueType::IntUnsigned(metric_value),
@@ -976,7 +977,7 @@ impl MetricGenerator {
                         timestamp: v.1.timestamp,
                         hostname: self.hostname.clone(),
                         state: String::from("ok"),
-                        tags: vec!["scaphandre".to_string()],
+                        tags: vec!["glasswing-power".to_string()],
                         attributes: attributes.clone(),
                         description: v.0,
                         metric_value: MetricValueType::Text(v.1.value),

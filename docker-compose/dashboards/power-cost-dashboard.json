@@ -224,7 +224,7 @@
         "type": "prometheus",
         "uid": "PBE40D95A8B8C9AF4"
       },
-      "description": "Total RAPL energy since scaphandre started",
+      "description": "Total RAPL energy since glasswing-power started",
       "fieldConfig": {
         "defaults": {
           "decimals": 4,
@@ -280,7 +280,7 @@
         "type": "prometheus",
         "uid": "PBE40D95A8B8C9AF4"
       },
-      "description": "Actual money spent since scaphandre started",
+      "description": "Actual money spent since glasswing-power started",
       "fieldConfig": {
         "defaults": {
           "decimals": 4,
@@ -1517,7 +1517,7 @@
   ],
   "refresh": "15s",
   "tags": [
-    "scaphandre",
+    "glasswing-power",
     "power",
     "cost",
     "energy",

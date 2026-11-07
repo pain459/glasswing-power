@@ -282,7 +282,7 @@ fn build_exporter(choice: ExporterChoice, sensor: &dyn Sensor) -> Box<dyn export
 
 /// Returns the sensor to use, given the command-line arguments.
 /// Unless sensor-specific options are provided, this should return
-/// the same thing as [`scaphandre::get_default_sensor`].
+/// the same thing as [`glasswing_power::get_default_sensor`].
 fn build_sensor(
     sensor_buffer_per_socket_max_kb: u16,
     sensor_buffer_per_domain_max_kb: u16,

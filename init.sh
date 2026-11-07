@@ -21,7 +21,7 @@ usage() {
   echo "--help: Display this usage"
   echo ""
   echo "This script change group ownership and rights of the powercap"
-  echo "special files. So you can run scaphandre as a regular user and"
+  echo "special files. So you can run glasswing-power as a regular user and"
   echo "access power data."
   exit 1
 }

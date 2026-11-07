@@ -65,7 +65,7 @@ pub struct ExporterArgs {
     #[arg(long)]
     pub containers: bool,
 
-    /// Filter processes based on regular expressions (example: 'scaph\\w\\w.e')
+    /// Filter processes based on regular expressions (example: 'glasswing\\w\\w.e')
     #[arg(long)]
     pub process_regex: Option<Regex>,
 

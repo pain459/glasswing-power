@@ -3,7 +3,7 @@
       "path_prefix": "glasswing-power"
     },
     "project": {
-        "repository": "https://github.com/pain459/scaphandre"    
+        "repository": "https://github.com/pain459/glasswing-power"    
     },
     "styles": {
       "theme": "light",
@@ -11,7 +11,7 @@
     },
     "marketing": {
       "social": {
-        "image": "https://raw.githubusercontent.com/pain459/scaphandre/main/docs_src/scaphandre.cleaned.png",
+        "image": "https://raw.githubusercontent.com/pain459/glasswing-power/main/docs_src/scaphandre.cleaned.png",
         "image_alt": "Glasswing Power",
         "twitter_account": "@pain459"
       }

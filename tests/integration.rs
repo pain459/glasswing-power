@@ -1,8 +1,8 @@
 #[cfg(all(feature = "qemu", target_os = "linux"))]
 #[test]
 fn exporter_qemu() {
-    use scaphandre::exporters::qemu::QemuExporter;
-    use scaphandre::sensors::powercap_rapl::PowercapRAPLSensor;
+    use glasswing_power::exporters::qemu::QemuExporter;
+    use glasswing_power::sensors::powercap_rapl::PowercapRAPLSensor;
     use std::env::current_dir;
     use std::fs::{create_dir, read_dir};
 

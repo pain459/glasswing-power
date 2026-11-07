@@ -198,7 +198,7 @@ pub struct ProcessTracker {
     pub procs: Vec<Vec<ProcessRecord>>,
     /// Number of CPU cores to deal with
     pub nb_cores: usize,
-    /// Maximum number of ProcessRecord instances that scaphandre is allowed to
+    /// Maximum number of ProcessRecord instances that glasswing-power is allowed to
     /// store, per PID (thus, for each subvector).
     pub max_records_per_process: u16,
     /// Sysinfo system for resources monitoring
@@ -235,7 +235,7 @@ impl ProcessTracker {
     /// ```
     /// // 5 will be the maximum number of ProcessRecord instances
     /// // stored for each PID.
-    /// use scaphandre::sensors::utils::ProcessTracker;
+    /// use glasswing_power::sensors::utils::ProcessTracker;
     /// let tracker = ProcessTracker::new(5);
     /// ```
     pub fn new(max_records_per_process: u16) -> ProcessTracker {
@@ -286,8 +286,8 @@ impl ProcessTracker {
     /// states during all the lifecycle of the exporter.
     /// # Linux Example:
     /// ```
-    /// use scaphandre::sensors::utils::{ProcessTracker, IProcess};
-    /// use scaphandre::sensors::Topology;
+    /// use glasswing_power::sensors::utils::{ProcessTracker, IProcess};
+    /// use glasswing_power::sensors::Topology;
     /// use std::collections::HashMap;
     /// use sysinfo::SystemExt;
     /// let mut pt = ProcessTracker::new(5);
@@ -831,12 +831,12 @@ mod tests {
 
         let mut topo = Topology::new(HashMap::new());
         topo.refresh();
-        let self_process_by_scaph = IProcess::myself(&topo.proc_tracker).unwrap();
+        let self_process_by_gw = IProcess::myself(&topo.proc_tracker).unwrap();
 
         assert_eq!(
             self_process_by_sysinfo.cmd().concat(),
             topo.proc_tracker
-                .get_process_cmdline(self_process_by_scaph.pid)
+                .get_process_cmdline(self_process_by_gw.pid)
                 .unwrap()
         );
     }

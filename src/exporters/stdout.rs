@@ -34,7 +34,7 @@ pub struct ExporterArgs {
     #[arg(short, long, default_value_t = 5)]
     pub processes: u16,
 
-    /// Filter processes based on regular expressions (example: 'scaph\\w\\w.e')
+    /// Filter processes based on regular expressions (example: 'glasswing\\w\\w.e')
     #[arg(short, long)]
     pub regex_filter: Option<Regex>,
 

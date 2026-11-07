@@ -154,7 +154,7 @@ impl Topology {
     ///# Examples
     ///
     /// ```
-    /// use scaphandre::sensors::Topology;
+    /// use glasswing_power::sensors::Topology;
     ///
     /// if let Some(cores) = Topology::generate_cpu_cores() {
     ///     println!("There are {} cores on this host.", cores.len());
@@ -978,7 +978,7 @@ pub struct CPUSocket {
     pub attributes: Vec<Vec<HashMap<String, String>>>,
     /// Path to the file that provides the counter for energy consumed by the socket, in microjoules.
     pub counter_uj_path: String,
-    /// Comsumption records measured and stored by scaphandre for this socket.
+    /// Comsumption records measured and stored by glasswing-power for this socket.
     pub record_buffer: Vec<Record>,
     /// Maximum size of the record_buffer in kilobytes.
     pub buffer_max_kbytes: u16,

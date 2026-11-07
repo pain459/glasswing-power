@@ -149,7 +149,7 @@ pub fn get_kubernetes_client() -> Result<Kubernetes, KubernetesError> {
 }
 
 #[test]
-// Fix bug https://github.com/hubblo-org/scaphandre/issues/175
+// Fix bug https://github.com/hubblo-org/scaphandre/issues/175 (upstream issue)
 fn test_filter_cmdline_with_carriage_return() {
     let cmdline = "bash-csleep infinity;\n> echo plop";
     assert_eq!(
