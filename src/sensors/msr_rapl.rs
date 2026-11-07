@@ -721,7 +721,7 @@ impl Sensor for MsrRAPLSensor {
 ///
 /// This function should is unsafe rust as it uses send_request, hence calls a DeviceIO Windows driver.
 /// The safety burden actuallr resides in the DeviceIO driver that is called. Please refer to the documentation to
-/// get the relationship between Scaphandre and its driver for Windows. The driver should exit smoothly if a wrong
+/// get the relationship between glasswing-power and its driver for Windows. The driver should exit smoothly if a wrong
 /// MSR address is called, then this function should throw an Error. Any improper issue with the operating system would mean
 /// there is an issue in the driver used behind the scene, or the way it is configured.
 pub unsafe fn get_msr_value(

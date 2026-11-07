@@ -356,7 +356,7 @@ mod test {
         "qemu",
     ];
 
-    /// Test that `--help` works for Scaphandre _and_ for each subcommand.
+    /// Test that `--help` works for glasswing-power _and_ for each subcommand.
     /// This also ensures that all the subcommands are properly defined, as Clap will check some constraints
     /// when trying to parse a subcommand (for instance, it will check that no two short options have the same name).
     #[test]

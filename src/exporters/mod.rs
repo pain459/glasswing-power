@@ -115,7 +115,7 @@ pub trait Exporter {
     fn kind(&self) -> &str;
 }
 
-/// MetricGenerator is an exporter helper structure to collect Scaphandre metrics.
+/// MetricGenerator is an exporter helper structure to collect glasswing-power metrics.
 /// The goal is to provide a standard Vec\<Metric\> that can be used by exporters
 /// to avoid code duplication.
 pub struct MetricGenerator {
@@ -987,7 +987,7 @@ impl MetricGenerator {
         }
     }
 
-    /// Generate all metrics provided by Scaphandre agent.
+    /// Generate all metrics provided by the glasswing-power agent.
     fn gen_all_metrics(&mut self) {
         info!(
             "{}: Get self metrics",
@@ -1027,15 +1027,9 @@ impl MetricGenerator {
 }
 
 //  Copyright 2020 The scaphandre authors.
+//  Copyright 2026 pain459
 //
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
+//  Licensed under the MIT License.
 //  You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an "AS IS" BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//      https://opensource.org/licenses/MIT
