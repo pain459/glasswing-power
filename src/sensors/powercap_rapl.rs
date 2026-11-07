@@ -46,7 +46,8 @@ impl PowercapRAPLSensor {
         }
     }
 
-    /// Checks if intel_rapl modules are present and activated.
+    /// Checks if RAPL modules are present and activated.
+    /// Supports both Intel (intel_rapl*) and AMD (rapl) kernel modules.
     pub fn check_module() -> Result<String, String> {
         let modules = modules().unwrap();
         let rapl_modules = modules
@@ -55,16 +56,17 @@ impl PowercapRAPLSensor {
                 v.name == "intel_rapl"
                     || v.name == "intel_rapl_msr"
                     || v.name == "intel_rapl_common"
+                    || v.name == "rapl"
             })
             .collect::<HashMap<&String, &KernelModule>>();
 
         if !rapl_modules.is_empty() {
             Ok(String::from(
-                "intel_rapl or intel_rapl_msr+intel_rapl_common modules found.",
+                "RAPL kernel module found (intel_rapl, intel_rapl_msr, intel_rapl_common, or rapl).",
             ))
         } else {
             Err(String::from(
-                "None of intel_rapl, intel_rapl_common or intel_rapl_msr kernel modules found.",
+                "None of intel_rapl, intel_rapl_common, intel_rapl_msr, or rapl kernel modules found.",
             ))
         }
     }
