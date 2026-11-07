@@ -14,8 +14,6 @@ This project is a fork of [Scaphandre](https://github.com/hubblo-org/scaphandre)
 
 **Warning**: this is still a very early stage project. Any feedback or contribution will be highly appreciated.
 
-![Fmt+Clippy](https://github.com/pain459/scaphandre/workflows/Tests/badge.svg?branch=main)
-
 ## ✨ Features
 
 - measuring power/energy consumed on **bare metal hosts**
