@@ -6,8 +6,8 @@ local prometheus = grafana.prometheus;
 local template = grafana.template;
 
 dashboard.new(
-    'Scaphandre example dashboard',
-    tags=['scaphandre', 'energy', 'power'],
+    'Glasswing Power example dashboard',
+    tags=['glasswing-power', 'energy', 'power'],
     editable=true
 )
 .addTemplate(

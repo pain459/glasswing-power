@@ -216,7 +216,7 @@
       },
       "id": 2,
       "panels": [],
-      "title": "Actuals (Since Scaphandre Started)",
+      "title": "Actuals (Since Glasswing Power Started)",
       "type": "row"
     },
     {
@@ -1528,6 +1528,6 @@
     "to": "now"
   },
   "timezone": "browser",
-  "title": "Scaphandre - Power Cost (INR / USD)",
+  "title": "Glasswing Power - Power Cost (INR / USD)",
   "version": 13
 }
