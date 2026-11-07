@@ -2,13 +2,13 @@
 
 use clap::{ArgAction, Parser, Subcommand};
 use colored::Colorize;
-use scaphandre::{exporters, sensors::Sensor};
+use glasswing_power::{exporters, sensors::Sensor};
 
 #[cfg(target_os = "linux")]
-use scaphandre::sensors::powercap_rapl;
+use glasswing_power::sensors::powercap_rapl;
 
 #[cfg(target_os = "windows")]
-use scaphandre::sensors::msr_rapl;
+use glasswing_power::sensors::msr_rapl;
 
 #[cfg(target_os = "windows")]
 use windows_service::{
