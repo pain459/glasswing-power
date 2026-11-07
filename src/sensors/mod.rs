@@ -577,7 +577,7 @@ impl Topology {
         Some(vec![
             Record::new(timestamp, load.one.to_string(), units::Unit::Numeric),
             Record::new(timestamp, load.five.to_string(), units::Unit::Numeric),
-            Record::new(timestamp, load.five.to_string(), units::Unit::Numeric),
+            Record::new(timestamp, load.fifteen.to_string(), units::Unit::Numeric),
         ])
     }
 

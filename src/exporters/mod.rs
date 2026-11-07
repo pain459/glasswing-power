@@ -457,7 +457,7 @@ impl MetricGenerator {
             } else if self.topology._sensor_data.contains_key("DRIVER_NAME") {
                 attributes.insert(
                     String::from("value_source"),
-                    String::from("scaphandredrv_rapl_pkg"),
+                    String::from("scaphandre_rapl_pkg"),
                 );
             }
 
