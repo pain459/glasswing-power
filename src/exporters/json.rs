@@ -76,10 +76,6 @@ pub struct ExporterArgs {
     /// Monitor and incude CPU, RAM and Disk usage per process
     #[arg(long)]
     pub resources: bool,
-    // TODO uncomment this option once we display something interesting about it
-    // /// Apply labels to metrics of processes looking like a Qemu/KVM virtual machine
-    // #[arg(short, long)]
-    // pub qemu: bool
 }
 
 // Below are the structures that will store the reports.

@@ -354,8 +354,6 @@ impl ProcessTracker {
         let mut res = vec![];
         for p in self.procs.iter() {
             if !p.is_empty() {
-                //TODO implement
-                // clippy will ask you to remove mut from res, but you just need to implement to fix that
                 if let Some(sysinfo_p) = self.sysinfo.process(p[0].process.pid) {
                     let status = sysinfo_p.status();
                     if status != ProcessStatus::Dead {
@@ -696,7 +694,6 @@ impl ProcessTracker {
     /// if the last ProcessRecord from the vector is of state Terminated
     /// (if the process is not running anymore)
     pub fn clean_terminated_process_records_vectors(&mut self) {
-        //TODO get stats from processes to know what is hapening !
         for v in &mut self.procs {
             if !v.is_empty()
                 && let Some(first) = v.first()

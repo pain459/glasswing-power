@@ -108,7 +108,7 @@ impl QemuExporter {
                 return String::from(splitted.next().unwrap().split(',').next().unwrap());
             }
         }
-        String::from("") // TODO return Option<String> None instead, and stop at line 76 (it won't work with {path}//intel-rapl)
+        String::from("")
     }
 
     /// Either creates an energy_uj file (as the ones managed by powercap kernel module)
