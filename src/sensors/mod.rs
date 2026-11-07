@@ -3,15 +3,9 @@
 //! `Sensor` is the root for all sensors. It defines the [Sensor] trait
 //! needed to implement a sensor.
 
-#[cfg(target_os = "windows")]
-pub mod msr_rapl;
-#[cfg(target_os = "windows")]
-use msr_rapl::get_msr_value;
-#[cfg(target_os = "linux")]
 pub mod powercap_rapl;
 pub mod units;
 pub mod utils;
-#[cfg(target_os = "linux")]
 use procfs::{CpuInfo, CpuTime, KernelStats};
 use std::{collections::HashMap, error::Error, fmt, fs, mem::size_of_val, str, time::Duration};
 #[allow(unused_imports)]
@@ -169,11 +163,9 @@ impl Topology {
         let sysinfo_system = System::new_all();
         let sysinfo_cores = sysinfo_system.cpus();
         debug!("Sysinfo sees {}", sysinfo_cores.len());
-        #[cfg(target_os = "linux")]
         let cpuinfo = CpuInfo::new().unwrap();
         for (id, c) in (0_u16..).zip(sysinfo_cores.iter()) {
             let mut info = HashMap::<String, String>::new();
-            #[cfg(target_os = "linux")]
             {
                 for (k, v) in cpuinfo.get_info(id as usize).unwrap().iter() {
                     info.insert(String::from(*k), String::from(*v));
@@ -282,7 +274,6 @@ impl Topology {
 
     /// Generates CPUCore instances for the host and adds them
     /// to appropriate CPUSocket instance from self.sockets
-    #[cfg(target_os = "linux")]
     pub fn add_cpu_cores(&mut self) {
         if let Some(mut cores) = Topology::generate_cpu_cores() {
             while let Some(c) = cores.pop() {
@@ -310,28 +301,6 @@ impl Topology {
                 }
             }
 
-            //#[cfg(target_os = "windows")]
-            //{
-            //TODO: fix
-            //let nb_sockets = &self.sockets.len();
-            //let mut socket_counter = 0;
-            //let nb_cores_per_socket = &cores.len() / nb_sockets;
-            //warn!("nb_cores_per_socket: {} cores_len: {} sockets_len: {}", nb_cores_per_socket, &cores.len(), &self.sockets.len());
-            //for s in self.sockets.iter_mut() {
-            //    for c in (socket_counter * nb_cores_per_socket)..((socket_counter+1) * nb_cores_per_socket) {
-            //        match cores.pop() {
-            //            Some(core) => {
-            //                warn!("adding core {} to socket {}", core.id, s.id);
-            //                s.add_cpu_core(core);
-            //            },
-            //            None => {
-            //                error!("Uneven number of CPU cores !");
-            //            }
-            //        }
-            //    }
-            //    socket_counter = socket_counter + 1;
-            //}
-            //}
         } else {
             panic!("Couldn't retrieve any CPU Core from the topology. (generate_cpu_cores)");
         }
@@ -542,69 +511,54 @@ impl Topology {
 
     /// Reads content from /proc/stat and extracts the stats of the whole CPU topology.
     pub fn read_stats(&self) -> Option<CPUStat> {
-        #[cfg(target_os = "linux")]
-        {
-            let kernelstats_or_not = KernelStats::new();
-            if let Ok(res_cputime) = kernelstats_or_not {
-                return Some(CPUStat {
-                    user: res_cputime.total.user,
-                    guest: res_cputime.total.guest,
-                    guest_nice: res_cputime.total.guest_nice,
-                    idle: res_cputime.total.idle,
-                    iowait: res_cputime.total.iowait,
-                    irq: res_cputime.total.irq,
-                    nice: res_cputime.total.nice,
-                    softirq: res_cputime.total.softirq,
-                    steal: res_cputime.total.steal,
-                    system: res_cputime.total.system,
-                });
-            }
+        let kernelstats_or_not = KernelStats::new();
+        if let Ok(res_cputime) = kernelstats_or_not {
+            return Some(CPUStat {
+                user: res_cputime.total.user,
+                guest: res_cputime.total.guest,
+                guest_nice: res_cputime.total.guest_nice,
+                idle: res_cputime.total.idle,
+                iowait: res_cputime.total.iowait,
+                irq: res_cputime.total.irq,
+                nice: res_cputime.total.nice,
+                softirq: res_cputime.total.softirq,
+                steal: res_cputime.total.steal,
+                system: res_cputime.total.system,
+            });
         }
         None
     }
 
     /// Returns the number of processes currently available
     pub fn read_nb_process_total_count(&self) -> Option<u64> {
-        #[cfg(target_os = "linux")]
-        {
-            if let Ok(result) = KernelStats::new() {
-                return Some(result.processes);
-            }
+        if let Ok(result) = KernelStats::new() {
+            return Some(result.processes);
         }
         None
     }
 
     /// Returns the number of processes currently in a running state
     pub fn read_nb_process_running_current(&self) -> Option<u32> {
-        #[cfg(target_os = "linux")]
+        if let Ok(result) = KernelStats::new()
+            && let Some(procs_running) = result.procs_running
         {
-            if let Ok(result) = KernelStats::new()
-                && let Some(procs_running) = result.procs_running
-            {
-                return Some(procs_running);
-            }
+            return Some(procs_running);
         }
         None
     }
     /// Returns the number of processes currently blocked waiting
     pub fn read_nb_process_blocked_current(&self) -> Option<u32> {
-        #[cfg(target_os = "linux")]
+        if let Ok(result) = KernelStats::new()
+            && let Some(procs_blocked) = result.procs_blocked
         {
-            if let Ok(result) = KernelStats::new()
-                && let Some(procs_blocked) = result.procs_blocked
-            {
-                return Some(procs_blocked);
-            }
+            return Some(procs_blocked);
         }
         None
     }
     /// Returns the current number of context switches
     pub fn read_nb_context_switches_total_count(&self) -> Option<u64> {
-        #[cfg(target_os = "linux")]
-        {
-            if let Ok(result) = KernelStats::new() {
-                return Some(result.ctxt);
-            }
+        if let Ok(result) = KernelStats::new() {
+            return Some(result.ctxt);
         }
         None
     }
@@ -917,7 +871,6 @@ impl Topology {
         None
     }
 
-    #[cfg(target_os = "linux")]
     pub fn get_rapl_psys_energy_microjoules(&self) -> Option<Record> {
         if let Some(psys) = self._sensor_data.get("psys") {
             match &fs::read_to_string(format!("{psys}/energy_uj")) {
@@ -939,30 +892,6 @@ impl Topology {
         None
     }
 
-    /// # Safety
-    ///
-    /// This function is unsafe rust as it calls get_msr_value function from msr_rapl sensor module.
-    /// It calls the msr_RAPL::MSR_PLATFORM_ENERGY_STATUS MSR address, which has been tested on several Intel x86 processors
-    /// but might fail on AMD (needs testing). That being said, it returns None if the msr query fails (which means if the Windows
-    /// driver fails.) and should not prevent from using a value coming from elsewhere, which means from another get_msr_value calls
-    /// targeting another msr address.
-    #[cfg(target_os = "windows")]
-    pub unsafe fn get_rapl_psys_energy_microjoules(&self) -> Option<Record> {
-        let msr_addr = msr_rapl::MSR_PLATFORM_ENERGY_STATUS;
-        match get_msr_value(0, msr_addr.into(), &self._sensor_data) {
-            Ok(res) => {
-                return Some(Record::new(
-                    current_system_time_since_epoch(),
-                    res.value.to_string(),
-                    units::Unit::MicroJoule,
-                ));
-            }
-            Err(e) => {
-                debug!("get_msr_value returned error : {}", e);
-            }
-        }
-        None
-    }
 }
 
 // !!!!!!!!!!!!!!!!! CPUSocket !!!!!!!!!!!!!!!!!!!!!!!
@@ -1340,13 +1269,10 @@ impl CPUCore {
 
     /// Reads content from /proc/stat and extracts the stats of the CPU core
     fn read_stats(&self) -> Option<CPUStat> {
-        #[cfg(target_os = "linux")]
-        {
-            if let Ok(mut kernelstats) = KernelStats::new() {
-                return Some(CPUStat::from_procfs_cputime(
-                    kernelstats.cpu_time.remove(self.id as usize),
-                ));
-            }
+        if let Ok(mut kernelstats) = KernelStats::new() {
+            return Some(CPUStat::from_procfs_cputime(
+                kernelstats.cpu_time.remove(self.id as usize),
+            ));
         }
         None
     }
@@ -1548,7 +1474,6 @@ pub struct CPUStat {
 }
 
 impl CPUStat {
-    #[cfg(target_os = "linux")]
     pub fn from_procfs_cputime(cpu_time: CpuTime) -> CPUStat {
         CPUStat {
             user: cpu_time.user,
@@ -1626,20 +1551,14 @@ mod tests {
 
     #[test]
     fn read_topology_stats() {
-        #[cfg(target_os = "linux")]
         let sensor = powercap_rapl::PowercapRAPLSensor::new(8, 8, false);
-        #[cfg(not(target_os = "linux"))]
-        let sensor = msr_rapl::MsrRAPLSensor::new();
         let topo = (*sensor.get_topology()).unwrap();
         println!("{:?}", topo.read_stats());
     }
 
     #[test]
     fn read_core_stats() {
-        #[cfg(target_os = "linux")]
         let sensor = powercap_rapl::PowercapRAPLSensor::new(8, 8, false);
-        #[cfg(not(target_os = "linux"))]
-        let sensor = msr_rapl::MsrRAPLSensor::new();
         let mut topo = (*sensor.get_topology()).unwrap();
         for s in topo.get_sockets() {
             for c in s.get_cores() {
@@ -1650,10 +1569,7 @@ mod tests {
 
     #[test]
     fn read_socket_stats() {
-        #[cfg(target_os = "linux")]
         let sensor = powercap_rapl::PowercapRAPLSensor::new(8, 8, false);
-        #[cfg(not(target_os = "linux"))]
-        let sensor = msr_rapl::MsrRAPLSensor::new();
         let mut topo = (*sensor.get_topology()).unwrap();
         for s in topo.get_sockets() {
             println!("{:?}", s.read_stats());

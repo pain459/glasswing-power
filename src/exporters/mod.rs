@@ -8,7 +8,6 @@ pub mod json;
 pub mod prometheus;
 #[cfg(feature = "prometheuspush")]
 pub mod prometheuspush;
-#[cfg(target_os = "linux")]
 pub mod qemu;
 #[cfg(feature = "riemann")]
 pub mod riemann;
@@ -127,7 +126,6 @@ pub struct MetricGenerator {
     /// `hostname` is the system name where the metrics belongs.
     hostname: String,
     /// Tells MetricGenerator if it has to watch for qemu virtual machines.
-    #[cfg(target_os = "linux")]
     qemu: bool,
     /// Tells MetricGenerator if it has to watch for containers.
     #[cfg(feature = "containers")]
@@ -208,7 +206,6 @@ impl MetricGenerator {
                 topology,
                 hostname,
                 containers,
-                #[cfg(target_os = "linux")]
                 qemu: _qemu,
                 containers_last_check: String::from(""),
                 docker_version,
@@ -227,7 +224,6 @@ impl MetricGenerator {
             data,
             topology,
             hostname,
-            #[cfg(target_os = "linux")]
             qemu: _qemu,
         }
     }
@@ -960,7 +956,6 @@ impl MetricGenerator {
             if let Some(cmdline_str) = cmdline {
                 attributes.insert("cmdline".to_string(), utils::filter_cmdline(&cmdline_str));
 
-                #[cfg(target_os = "linux")]
                 if self.qemu
                     && let Some(vmname) = utils::filter_qemu_cmdline(&cmdline_str)
                 {
