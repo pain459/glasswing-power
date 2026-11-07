@@ -2,8 +2,7 @@ use procfs::{CpuInfo, KernelStats};
 use std::collections::HashMap;
 use std::fs;
 use std::mem::size_of_val;
-use sysinfo::{CpuExt, Pid, System, SystemExt};
-use sysinfo::{DiskExt, DiskType};
+use sysinfo::{Disks, Pid, System};
 use crate::sensors::core::CPUCore;
 use crate::sensors::domain::Domain;
 use crate::sensors::record::{CPUStat, Record};
@@ -140,7 +139,7 @@ impl Topology {
     pub fn generate_cpu_cores() -> Option<Vec<CPUCore>> {
         let mut cores = vec![];
 
-        let sysinfo_system = System::new_all();
+        let sysinfo_system = System::new_all().expect("sysinfo not supported on this OS");
         let sysinfo_cores = sysinfo_system.cpus();
         debug!("Sysinfo sees {}", sysinfo_cores.len());
         let cpuinfo = CpuInfo::new().unwrap();
@@ -315,7 +314,7 @@ impl Topology {
     fn refresh_procs(&mut self) {
         {
             let pt = &mut self.proc_tracker;
-            pt.sysinfo.refresh_processes();
+            pt.sysinfo.refresh_processes(sysinfo::ProcessesToUpdate::All, true);
             let current_procs = pt
                 .sysinfo
                 .processes()
@@ -549,7 +548,7 @@ impl Topology {
     }
 
     pub fn get_load_avg(&self) -> Option<Vec<Record>> {
-        let load = self.get_proc_tracker().sysinfo.load_average();
+        let load = sysinfo::System::load_average().expect("failed to get load average");
         let timestamp = current_system_time_since_epoch();
         Some(vec![
             Record::new(timestamp, load.one.to_string(), units::Unit::Numeric),
@@ -561,24 +560,14 @@ impl Topology {
     pub fn get_disks(&self) -> HashMap<String, (String, HashMap<String, String>, Record)> {
         let timestamp = current_system_time_since_epoch();
         let mut res = HashMap::new();
-        for d in self.proc_tracker.sysinfo.disks() {
+        let disks = Disks::new_with_refreshed_list();
+        for d in disks.iter().flatten() {
             let mut attributes = HashMap::new();
-            if let Ok(file_system) = str::from_utf8(d.file_system()) {
+            if let Some(file_system) = d.file_system().to_str() {
                 attributes.insert(String::from("disk_file_system"), String::from(file_system));
             }
             if let Some(mount_point) = d.mount_point().to_str() {
                 attributes.insert(String::from("disk_mount_point"), String::from(mount_point));
-            }
-            match d.type_() {
-                DiskType::SSD => {
-                    attributes.insert(String::from("disk_type"), String::from("SSD"));
-                }
-                DiskType::HDD => {
-                    attributes.insert(String::from("disk_type"), String::from("HDD"));
-                }
-                DiskType::Unknown(_) => {
-                    attributes.insert(String::from("disk_type"), String::from("Unknown"));
-                }
             }
             attributes.insert(
                 String::from("disk_is_removable"),
