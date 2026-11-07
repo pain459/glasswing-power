@@ -17,7 +17,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "description": "Instantaneous RAPL reading",
       "fieldConfig": {
@@ -69,7 +69,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "scaph_host_power_microwatts / 1000000",
           "refId": "A"
@@ -81,7 +81,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "description": "How fast you are spending right now: Power \u00d7 9 INR/kWh",
       "fieldConfig": {
@@ -133,7 +133,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "scaph_host_power_microwatts / 1000000 * 9 / 1000",
           "refId": "A"
@@ -145,7 +145,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "description": "How fast you are spending right now in USD",
       "fieldConfig": {
@@ -197,7 +197,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "scaph_host_power_microwatts / 1000000 * 9 / 1000 / 94.66",
           "refId": "A"
@@ -222,7 +222,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "description": "Total RAPL energy since glasswing-power started",
       "fieldConfig": {
@@ -266,7 +266,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "scaph_host_energy_microjoules / 1000000 / 3600000",
           "refId": "A"
@@ -278,7 +278,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "description": "Actual money spent since glasswing-power started",
       "fieldConfig": {
@@ -330,7 +330,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "scaph_host_energy_microjoules / 1000000 / 3600000 * 9",
           "refId": "A"
@@ -342,7 +342,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "description": "Actual money spent in USD",
       "fieldConfig": {
@@ -394,7 +394,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "scaph_host_energy_microjoules / 1000000 / 3600000 * 9 / 94.66",
           "refId": "A"
@@ -406,7 +406,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "description": "True session average: total energy / total time",
       "fieldConfig": {
@@ -450,7 +450,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "avg_over_time(scaph_host_power_microwatts[1d]) / 1000000",
           "refId": "A"
@@ -462,7 +462,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "description": "Highest instantaneous reading",
       "fieldConfig": {
@@ -506,7 +506,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "scaph_host_power_microwatts / 1000000",
           "refId": "A"
@@ -531,7 +531,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "fieldConfig": {
         "defaults": {
@@ -574,7 +574,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "scaph_host_power_microwatts / 1000000 * 9 / 1000",
           "refId": "A"
@@ -586,7 +586,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "fieldConfig": {
         "defaults": {
@@ -629,7 +629,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "scaph_host_power_microwatts / 1000000 * 24 * 9 / 1000",
           "refId": "A"
@@ -641,7 +641,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "fieldConfig": {
         "defaults": {
@@ -684,7 +684,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "scaph_host_power_microwatts / 1000000 * 168 * 9 / 1000",
           "refId": "A"
@@ -696,7 +696,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "fieldConfig": {
         "defaults": {
@@ -739,7 +739,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "scaph_host_power_microwatts / 1000000 * 720 * 9 / 1000",
           "refId": "A"
@@ -751,7 +751,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "fieldConfig": {
         "defaults": {
@@ -794,7 +794,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "scaph_host_power_microwatts / 1000000 * 8760 * 9 / 1000",
           "refId": "A"
@@ -806,7 +806,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "fieldConfig": {
         "defaults": {
@@ -849,7 +849,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "scaph_host_power_microwatts / 1000000 * 9 / 1000 / 94.66",
           "refId": "A"
@@ -861,7 +861,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "fieldConfig": {
         "defaults": {
@@ -904,7 +904,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "scaph_host_power_microwatts / 1000000 * 24 * 9 / 1000 / 94.66",
           "refId": "A"
@@ -916,7 +916,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "fieldConfig": {
         "defaults": {
@@ -959,7 +959,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "scaph_host_power_microwatts / 1000000 * 720 * 9 / 1000 / 94.66",
           "refId": "A"
@@ -984,7 +984,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "description": "Total energy since monitoring started (equals today since system started today)",
       "fieldConfig": {
@@ -1028,7 +1028,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "scaph_host_energy_microjoules / 1000000 / 3600000 * 9",
           "refId": "A"
@@ -1040,7 +1040,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "description": "Total energy since monitoring started (USD)",
       "fieldConfig": {
@@ -1084,7 +1084,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "scaph_host_energy_microjoules / 1000000 / 3600000 * 9 / 94.66",
           "refId": "A"
@@ -1096,7 +1096,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "description": "Total energy since monitoring started (will differentiate from Today after 7 days)",
       "fieldConfig": {
@@ -1140,7 +1140,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "scaph_host_energy_microjoules / 1000000 / 3600000 * 9",
           "refId": "A"
@@ -1152,7 +1152,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "description": "Total energy since monitoring started (USD)",
       "fieldConfig": {
@@ -1196,7 +1196,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "scaph_host_energy_microjoules / 1000000 / 3600000 * 9 / 94.66",
           "refId": "A"
@@ -1208,7 +1208,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "description": "Total energy since monitoring started (will differentiate from Today after 30 days)",
       "fieldConfig": {
@@ -1252,7 +1252,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "scaph_host_energy_microjoules / 1000000 / 3600000 * 9",
           "refId": "A"
@@ -1264,7 +1264,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "description": "Total energy since monitoring started (USD)",
       "fieldConfig": {
@@ -1308,7 +1308,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "scaph_host_energy_microjoules / 1000000 / 3600000 * 9 / 94.66",
           "refId": "A"
@@ -1333,7 +1333,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBE40D95A8B8C9AF4"
+        "uid": "PDC628E2375F40484"
       },
       "description": "Per-process power (RAPL \u00d7 CPU share) and cost. Rate: 9 INR/kWh, 1 USD = 94.66 INR",
       "fieldConfig": {
@@ -1443,7 +1443,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBE40D95A8B8C9AF4"
+            "uid": "PDC628E2375F40484"
           },
           "expr": "topk(15, scaph_process_power_consumption_microwatts / 1000000)",
           "format": "table",
