@@ -1,5 +1,4 @@
 use ordered_float::*;
-#[cfg(target_os = "linux")]
 use procfs;
 use regex::Regex;
 #[allow(unused_imports)]
@@ -11,7 +10,7 @@ use sysinfo::{
     CpuExt, CpuRefreshKind, Pid, Process, ProcessExt, ProcessStatus, System, SystemExt,
     get_current_pid,
 };
-#[cfg(all(target_os = "linux", feature = "containers"))]
+#[cfg(feature = "containers")]
 use {docker_sync::container::Container, k8s_sync::Pod};
 
 pub struct IStatM {
@@ -85,57 +84,36 @@ pub struct IProcess {
     pub total_disk_read: u64,
     // Total disk bytes written by the process
     pub total_disk_written: u64,
-    #[cfg(target_os = "linux")]
     pub stime: u64,
-    #[cfg(target_os = "linux")]
     pub utime: u64,
 }
 
 impl IProcess {
     pub fn new(process: &Process) -> IProcess {
         let disk_usage = process.disk_usage();
-        #[cfg(target_os = "linux")]
+        let mut stime = 0;
+        let mut utime = 0;
+        if let Ok(procfs_process) =
+            procfs::process::Process::new(process.pid().to_string().parse::<i32>().unwrap())
+            && let Ok(stat) = procfs_process.stat()
         {
-            let mut stime = 0;
-            let mut utime = 0;
-            if let Ok(procfs_process) =
-                procfs::process::Process::new(process.pid().to_string().parse::<i32>().unwrap())
-                && let Ok(stat) = procfs_process.stat()
-            {
-                stime += stat.stime;
-                utime += stat.utime;
-            }
-            IProcess {
-                pid: process.pid(),
-                owner: 0,
-                comm: String::from(process.exe().to_str().unwrap()),
-                cmdline: process.cmd().to_vec(),
-                cpu_usage_percentage: process.cpu_usage(),
-                memory: process.memory(),
-                virtual_memory: process.virtual_memory(),
-                disk_read: disk_usage.read_bytes,
-                disk_written: disk_usage.written_bytes,
-                total_disk_read: disk_usage.total_read_bytes,
-                total_disk_written: disk_usage.total_written_bytes,
-                stime,
-                utime,
-            }
+            stime += stat.stime;
+            utime += stat.utime;
         }
-        #[cfg(not(target_os = "linux"))]
-        {
-            IProcess {
-                pid: process.pid(),
-                owner: 0,
-                comm: String::from(process.exe().to_str().unwrap()),
-                cmdline: process.cmd().to_vec(),
-                cpu_usage_percentage: process.cpu_usage(),
-                memory: process.memory(),
-                virtual_memory: process.virtual_memory(),
-                disk_read: disk_usage.read_bytes,
-                disk_written: disk_usage.written_bytes,
-                total_disk_read: disk_usage.total_read_bytes,
-                total_disk_written: disk_usage.total_written_bytes,
-            }
+        IProcess {
+            pid: process.pid(),
+            owner: 0,
+            comm: String::from(process.exe().to_str().unwrap()),
+            cmdline: process.cmd().to_vec(),
+            cpu_usage_percentage: process.cpu_usage(),
+            memory: process.memory(),
+            virtual_memory: process.virtual_memory(),
+            disk_read: disk_usage.read_bytes,
+            disk_written: disk_usage.written_bytes,
+            total_disk_read: disk_usage.total_read_bytes,
+            total_disk_written: disk_usage.total_written_bytes,
+            stime,
+            utime,
         }
     }
 
@@ -157,7 +135,6 @@ impl IProcess {
         }
     }
 
-    #[cfg(target_os = "linux")]
     pub fn total_time_jiffies(&self, proc_tracker: &ProcessTracker) -> u64 {
         if let Some(rec) = proc_tracker.get_process_last_record(self.pid) {
             return rec.process.stime + rec.process.utime;
@@ -174,21 +151,11 @@ impl IProcess {
         ))
     }
 
-    #[cfg(target_os = "linux")]
     pub fn cgroups() {}
 }
 
 pub fn page_size() -> Result<u64, String> {
-    let res;
-    #[cfg(target_os = "linux")]
-    {
-        res = Ok(procfs::page_size())
-    }
-    #[cfg(target_os = "windows")]
-    {
-        res = Ok(4096u64)
-    }
-    res
+    Ok(procfs::page_size())
 }
 
 #[derive(Debug)]
@@ -386,19 +353,7 @@ impl ProcessTracker {
         trace!("In get alive processes.");
         let mut res = vec![];
         for p in self.procs.iter() {
-            //#[cfg(target_os = "linux")]
-            //if !p.is_empty() {
-            //    let status = p[0].process.status();
-            //    if let Ok(status_val) = status {
-            //        if !&status_val.state.contains('T') {
-            //            // !&status_val.state.contains("Z") &&
-            //            res.push(p);
-            //        }
-            //    }
-            //}
             if !p.is_empty() {
-                //TODO implement
-                // clippy will ask you to remove mut from res, but you just need to implement to fix that
                 if let Some(sysinfo_p) = self.sysinfo.process(p[0].process.pid) {
                     let status = sysinfo_p.status();
                     if status != ProcessStatus::Dead {
@@ -739,7 +694,6 @@ impl ProcessTracker {
     /// if the last ProcessRecord from the vector is of state Terminated
     /// (if the process is not running anymore)
     pub fn clean_terminated_process_records_vectors(&mut self) {
-        //TODO get stats from processes to know what is hapening !
         for v in &mut self.procs {
             if !v.is_empty()
                 && let Some(first) = v.first()
@@ -792,7 +746,6 @@ impl ProcessTracker {
 /// Stores the information of a give process at a given timestamp
 #[derive(Debug, Clone)]
 pub struct ProcessRecord {
-    //TODO: abstract from Process procfs
     pub process: IProcess,
     pub timestamp: Duration,
 }
@@ -841,7 +794,6 @@ mod tests {
         );
     }
 
-    #[cfg(all(test, target_os = "linux"))]
     #[test]
     fn process_records_added() {
         use super::*;
@@ -857,7 +809,6 @@ mod tests {
         assert_eq!(tracker.procs[0].len(), 3);
     }
 
-    #[cfg(all(test, target_os = "linux"))]
     #[test]
     fn process_records_cleaned() {
         use super::*;
@@ -877,15 +828,9 @@ mod tests {
 }
 
 //  Copyright 2020 The scaphandre authors.
+//  Copyright 2026 pain459
 //
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
+//  Licensed under the MIT License.
 //  You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an "AS IS" BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//      https://opensource.org/licenses/MIT

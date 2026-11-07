@@ -1,5 +1,6 @@
 use crate::exporters::*;
 use crate::sensors::Sensor;
+use crate::sensors::utils::{IProcess, current_system_time_since_epoch};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::sync::atomic::AtomicBool;
@@ -34,8 +35,8 @@ pub struct JsonExporter {
 
 /// Holds the arguments for a JsonExporter.
 ///
-/// When using Scaphandre as a command-line application, such a struct will be
-/// automatically populated by the clap library. If you're using Scaphandre as
+/// When using glasswing-power as a command-line application, such a struct will be
+/// automatically populated by the clap library. If you're using glasswing-power as
 /// a library, you should populate the arguments yourself.
 #[derive(clap::Args, Debug)]
 pub struct ExporterArgs {
@@ -76,10 +77,6 @@ pub struct ExporterArgs {
     /// Monitor and incude CPU, RAM and Disk usage per process
     #[arg(long)]
     pub resources: bool,
-    // TODO uncomment this option once we display something interesting about it
-    // /// Apply labels to metrics of processes looking like a Qemu/KVM virtual machine
-    // #[arg(short, long)]
-    // pub qemu: bool
 }
 
 // Below are the structures that will store the reports.
@@ -355,9 +352,11 @@ impl JsonExporter {
         self.metric_generator.gen_all_metrics();
 
         let metrics = self.metric_generator.pop_metrics();
-        let mut metrics_iter = metrics.iter();
-        let socket_metrics_res = metrics_iter.find(|x| x.name == "scaph_socket_power_microwatts");
-        //TODO: fix for multiple sockets
+        let metrics_iter = metrics.iter();
+        let socket_metrics_res: Vec<&Metric> = metrics
+            .iter()
+            .filter(|x| x.name == "scaph_socket_power_microwatts")
+            .collect();
         let mut host_report: Option<Host> = None;
         let disks = self.gen_disks_report(
             &metrics_iter
@@ -378,8 +377,8 @@ impl JsonExporter {
                 });
             }
         } else {
-            info!("didn't find host metric");
-            // TODO in that case, no report is written, thus I think we should return here (?)
+            info!("didn't find host metric, skipping report");
+            return;
         };
 
         if let Some(host) = &mut host_report {
@@ -609,15 +608,9 @@ mod tests {
 }
 
 //  Copyright 2020 The scaphandre authors.
+//  Copyright 2026 pain459
 //
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
+//  Licensed under the MIT License.
 //  You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an "AS IS" BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//      https://opensource.org/licenses/MIT

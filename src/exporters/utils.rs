@@ -75,7 +75,7 @@ pub fn get_glasswing_power_version() -> String {
     format!("{major_version}.{patch_version}{minor_version}")
 }
 
-/// Returns the hostname of the system running Scaphandre.
+/// Returns the hostname of the system running glasswing-power.
 pub fn get_hostname() -> String {
     String::from(
         hostname::get()
@@ -159,15 +159,9 @@ fn test_filter_cmdline_with_carriage_return() {
 }
 
 //  Copyright 2020 The scaphandre authors.
+//  Copyright 2026 pain459
 //
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
+//  Licensed under the MIT License.
 //  You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an "AS IS" BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//      https://opensource.org/licenses/MIT

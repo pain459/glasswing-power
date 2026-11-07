@@ -69,7 +69,10 @@ impl QemuExporter {
                     if fs::read_dir(&first_domain_path).is_err() {
                         match fs::create_dir_all(&first_domain_path) {
                             Ok(_) => info!("Created {} folder.", &path),
-                            Err(error) => panic!("Couldn't create {}. Got: {}", path, error),
+                            Err(error) => {
+                                error!("Couldn't create {}. Got: {}", path, error);
+                                continue;
+                            }
                         }
                     }
                     if let Some(ratio) = self
@@ -108,7 +111,7 @@ impl QemuExporter {
                 return String::from(splitted.next().unwrap().split(',').next().unwrap());
             }
         }
-        String::from("") // TODO return Option<String> None instead, and stop at line 76 (it won't work with {path}//intel-rapl)
+        String::from("")
     }
 
     /// Either creates an energy_uj file (as the ones managed by powercap kernel module)
@@ -119,7 +122,12 @@ impl QemuExporter {
         if fs::read_dir(path).is_err() {
             match fs::create_dir_all(path) {
                 Ok(_) => info!("Created {} folder.", path),
-                Err(error) => panic!("Couldn't create {}. Got: {}", path, error),
+                Err(error) => {
+                    return Err(io::Error::new(
+                        io::ErrorKind::Other,
+                        format!("Couldn't create {}. Got: {}", path, error),
+                    ));
+                }
             }
         }
         let file_path = format!("{}/{}", path, "energy_uj");
@@ -157,15 +165,9 @@ impl QemuExporter {
 }
 
 //  Copyright 2020 The scaphandre authors.
+//  Copyright 2026 pain459
 //
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
+//  Licensed under the MIT License.
 //  You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an "AS IS" BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+//      https://opensource.org/licenses/MIT

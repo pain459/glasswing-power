@@ -4,10 +4,8 @@
 
 - [Getting Started](tutorials/getting_started.md)
 - [Installation on GNU/Linux](tutorials/installation-linux.md)
-- [Installation on Windows](tutorials/installation-windows.md)
 - [Docker-compose](tutorials/docker-compose.md)
 - [Compilation for GNU/Linux](tutorials/compilation-linux.md)
-- [Compilation for Windows](tutorials/compilation-windows.md)
 - [Power consumption of a Kubernetes cluster with scaphandre, prometheus and grafana](tutorials/kubernetes.md)
 
 # How-to guides
@@ -40,7 +38,6 @@
 
 ## Sensors
 
-- [MSR_RAPL sensor](references/sensor-msr_rapl.md)
 - [PowercapRAPL sensor](references/sensor-powercap_rapl.md)
 
 [Why this project ?](why.md)
