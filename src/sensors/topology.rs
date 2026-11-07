@@ -323,11 +323,8 @@ impl Topology {
                 .map(IProcess::new)
                 .collect::<Vec<_>>();
             for p in current_procs {
-                match pt.add_process_record(p) {
-                    Ok(_) => {}
-                    Err(msg) => {
-                        panic!("Failed to track process !\nGot: {}", msg)
-                    }
+                if let Err(msg) = pt.add_process_record(p) {
+                    error!("Failed to track process: {}", msg);
                 }
             }
         }

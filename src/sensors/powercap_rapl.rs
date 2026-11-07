@@ -291,7 +291,7 @@ impl Sensor for PowercapRAPLSensor {
     fn get_topology(&self) -> Box<Option<Topology>> {
         let topology = self.generate_topology().ok();
         if topology.is_none() {
-            panic!("Couldn't generate the topology !");
+            error!("Couldn't generate the topology!");
         }
         Box::new(topology)
     }

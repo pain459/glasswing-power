@@ -69,7 +69,10 @@ impl QemuExporter {
                     if fs::read_dir(&first_domain_path).is_err() {
                         match fs::create_dir_all(&first_domain_path) {
                             Ok(_) => info!("Created {} folder.", &path),
-                            Err(error) => panic!("Couldn't create {}. Got: {}", path, error),
+                            Err(error) => {
+                                error!("Couldn't create {}. Got: {}", path, error);
+                                continue;
+                            }
                         }
                     }
                     if let Some(ratio) = self
@@ -119,7 +122,12 @@ impl QemuExporter {
         if fs::read_dir(path).is_err() {
             match fs::create_dir_all(path) {
                 Ok(_) => info!("Created {} folder.", path),
-                Err(error) => panic!("Couldn't create {}. Got: {}", path, error),
+                Err(error) => {
+                    return Err(io::Error::new(
+                        io::ErrorKind::Other,
+                        format!("Couldn't create {}. Got: {}", path, error),
+                    ));
+                }
             }
         }
         let file_path = format!("{}/{}", path, "energy_uj");
