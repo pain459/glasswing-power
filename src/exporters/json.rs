@@ -1,5 +1,6 @@
 use crate::exporters::*;
 use crate::sensors::Sensor;
+use crate::sensors::utils::{IProcess, current_system_time_since_epoch};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::sync::atomic::AtomicBool;
