@@ -22,7 +22,7 @@ services:
         source: "./dashboards/power-cost-dashboard.json"
         target: "/var/lib/grafana/dashboards/power-cost/power-cost-dashboard.json"
   glasswing-power:
-    image: pain459/glasswing-power
+    image: glasswing-power:latest
     privileged: true
     ports: 
       - "8081:8080"

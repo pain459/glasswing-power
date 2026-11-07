@@ -712,6 +712,38 @@ dependencies = [
 ]
 
 [[package]]
+name = "glasswing-power"
+version = "1.0.2"
+dependencies = [
+ "chrono",
+ "clap",
+ "colored",
+ "core_affinity",
+ "ctrlc",
+ "docker-sync",
+ "hostname",
+ "hyper",
+ "isahc",
+ "k8s-sync",
+ "log",
+ "loggerv",
+ "ordered-float",
+ "procfs",
+ "raw-cpuid",
+ "regex",
+ "riemann_client",
+ "serde",
+ "serde_json",
+ "sysinfo",
+ "time 0.3.20",
+ "tokio",
+ "warp10",
+ "windows 0.27.0",
+ "windows-service",
+ "x86",
+]
+
+[[package]]
 name = "h2"
 version = "0.3.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1671,38 +1703,6 @@ name = "ryu"
 version = "1.0.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f91339c0467de62360649f8d3e185ca8de4224ff281f66000de5eb2a77a79041"
-
-[[package]]
-name = "scaphandre"
-version = "1.0.2"
-dependencies = [
- "chrono",
- "clap",
- "colored",
- "core_affinity",
- "ctrlc",
- "docker-sync",
- "hostname",
- "hyper",
- "isahc",
- "k8s-sync",
- "log",
- "loggerv",
- "ordered-float",
- "procfs",
- "raw-cpuid",
- "regex",
- "riemann_client",
- "serde",
- "serde_json",
- "sysinfo",
- "time 0.3.20",
- "tokio",
- "warp10",
- "windows 0.27.0",
- "windows-service",
- "x86",
-]
 
 [[package]]
 name = "schannel"
