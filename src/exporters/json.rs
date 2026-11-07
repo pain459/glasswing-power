@@ -352,9 +352,11 @@ impl JsonExporter {
         self.metric_generator.gen_all_metrics();
 
         let metrics = self.metric_generator.pop_metrics();
-        let mut metrics_iter = metrics.iter();
-        let socket_metrics_res = metrics_iter.find(|x| x.name == "scaph_socket_power_microwatts");
-        //TODO: fix for multiple sockets
+        let metrics_iter = metrics.iter();
+        let socket_metrics_res: Vec<&Metric> = metrics
+            .iter()
+            .filter(|x| x.name == "scaph_socket_power_microwatts")
+            .collect();
         let mut host_report: Option<Host> = None;
         let disks = self.gen_disks_report(
             &metrics_iter
@@ -375,8 +377,8 @@ impl JsonExporter {
                 });
             }
         } else {
-            info!("didn't find host metric");
-            // TODO in that case, no report is written, thus I think we should return here (?)
+            info!("didn't find host metric, skipping report");
+            return;
         };
 
         if let Some(host) = &mut host_report {

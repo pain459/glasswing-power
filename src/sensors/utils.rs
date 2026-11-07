@@ -746,7 +746,6 @@ impl ProcessTracker {
 /// Stores the information of a give process at a given timestamp
 #[derive(Debug, Clone)]
 pub struct ProcessRecord {
-    //TODO: abstract from Process procfs
     pub process: IProcess,
     pub timestamp: Duration,
 }
