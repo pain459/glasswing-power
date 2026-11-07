@@ -31,14 +31,6 @@ This project is a fork of [Scaphandre](https://github.com/hubblo-org/scaphandre)
 
 ## 📄 How to ... ?
 
-You'll find everything you may want to know about glasswing-power in the [documentation](https://hubblo-org.github.io/scaphandre-documentation), like:
-
-- 🏁 [Getting started](https://hubblo-org.github.io/scaphandre-documentation/tutorials/getting_started.html)
-- 💻 [Installation & compilation on GNU/Linux](https://hubblo-org.github.io/scaphandre-documentation/tutorials/installation-linux.html)
-- 👁️ [Give a virtual machine access to its power consumption metrics, and break the opacity of being on the computer of someone else](https://hubblo-org.github.io/scaphandre-documentation/how-to_guides/propagate-metrics-hypervisor-to-vm_qemu-kvm.html)
-- 🎉 [Contributing guide](https://hubblo-org.github.io/scaphandre-documentation/contributing.html)
-- [And much more](https://hubblo-org.github.io/scaphandre-documentation)
-
 If you are only interested in the code documentation [here it is](https://docs.rs/glasswing-power).
 
 ## ⚖️  Footprint
