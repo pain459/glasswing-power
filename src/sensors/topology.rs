@@ -1,9 +1,8 @@
-use procfs::{CpuInfo, KernelStats};
+use procfs::{CpuInfo, Current, CurrentSI, KernelStats};
 use std::collections::HashMap;
 use std::fs;
 use std::mem::size_of_val;
-use sysinfo::{CpuExt, Pid, System, SystemExt};
-use sysinfo::{DiskExt, DiskType};
+use sysinfo::{Disks, Pid, System};
 use crate::sensors::core::CPUCore;
 use crate::sensors::domain::Domain;
 use crate::sensors::record::{CPUStat, Record};
@@ -140,10 +139,10 @@ impl Topology {
     pub fn generate_cpu_cores() -> Option<Vec<CPUCore>> {
         let mut cores = vec![];
 
-        let sysinfo_system = System::new_all();
+        let sysinfo_system = System::new_all().expect("sysinfo not supported on this OS");
         let sysinfo_cores = sysinfo_system.cpus();
         debug!("Sysinfo sees {}", sysinfo_cores.len());
-        let cpuinfo = CpuInfo::new().unwrap();
+        let cpuinfo = CpuInfo::current().unwrap();
         for (id, c) in (0_u16..).zip(sysinfo_cores.iter()) {
             let mut info = HashMap::<String, String>::new();
             {
@@ -315,7 +314,7 @@ impl Topology {
     fn refresh_procs(&mut self) {
         {
             let pt = &mut self.proc_tracker;
-            pt.sysinfo.refresh_processes();
+            pt.sysinfo.refresh_processes(sysinfo::ProcessesToUpdate::All, true);
             let current_procs = pt
                 .sysinfo
                 .processes()
@@ -488,7 +487,7 @@ impl Topology {
 
     /// Reads content from /proc/stat and extracts the stats of the whole CPU topology.
     pub fn read_stats(&self) -> Option<CPUStat> {
-        let kernelstats_or_not = KernelStats::new();
+        let kernelstats_or_not = KernelStats::current();
         if let Ok(res_cputime) = kernelstats_or_not {
             return Some(CPUStat {
                 user: res_cputime.total.user,
@@ -508,7 +507,7 @@ impl Topology {
 
     /// Returns the number of processes currently available
     pub fn read_nb_process_total_count(&self) -> Option<u64> {
-        if let Ok(result) = KernelStats::new() {
+        if let Ok(result) = KernelStats::current() {
             return Some(result.processes);
         }
         None
@@ -516,7 +515,7 @@ impl Topology {
 
     /// Returns the number of processes currently in a running state
     pub fn read_nb_process_running_current(&self) -> Option<u32> {
-        if let Ok(result) = KernelStats::new()
+        if let Ok(result) = KernelStats::current()
             && let Some(procs_running) = result.procs_running
         {
             return Some(procs_running);
@@ -525,7 +524,7 @@ impl Topology {
     }
     /// Returns the number of processes currently blocked waiting
     pub fn read_nb_process_blocked_current(&self) -> Option<u32> {
-        if let Ok(result) = KernelStats::new()
+        if let Ok(result) = KernelStats::current()
             && let Some(procs_blocked) = result.procs_blocked
         {
             return Some(procs_blocked);
@@ -534,7 +533,7 @@ impl Topology {
     }
     /// Returns the current number of context switches
     pub fn read_nb_context_switches_total_count(&self) -> Option<u64> {
-        if let Ok(result) = KernelStats::new() {
+        if let Ok(result) = KernelStats::current() {
             return Some(result.ctxt);
         }
         None
@@ -549,7 +548,7 @@ impl Topology {
     }
 
     pub fn get_load_avg(&self) -> Option<Vec<Record>> {
-        let load = self.get_proc_tracker().sysinfo.load_average();
+        let load = sysinfo::System::load_average().expect("failed to get load average");
         let timestamp = current_system_time_since_epoch();
         Some(vec![
             Record::new(timestamp, load.one.to_string(), units::Unit::Numeric),
@@ -561,24 +560,14 @@ impl Topology {
     pub fn get_disks(&self) -> HashMap<String, (String, HashMap<String, String>, Record)> {
         let timestamp = current_system_time_since_epoch();
         let mut res = HashMap::new();
-        for d in self.proc_tracker.sysinfo.disks() {
+        let disks = Disks::new_with_refreshed_list();
+        for d in disks.iter().flatten() {
             let mut attributes = HashMap::new();
-            if let Ok(file_system) = str::from_utf8(d.file_system()) {
+            if let Some(file_system) = d.file_system().to_str() {
                 attributes.insert(String::from("disk_file_system"), String::from(file_system));
             }
             if let Some(mount_point) = d.mount_point().to_str() {
                 attributes.insert(String::from("disk_mount_point"), String::from(mount_point));
-            }
-            match d.type_() {
-                DiskType::SSD => {
-                    attributes.insert(String::from("disk_type"), String::from("SSD"));
-                }
-                DiskType::HDD => {
-                    attributes.insert(String::from("disk_type"), String::from("HDD"));
-                }
-                DiskType::Unknown(_) => {
-                    attributes.insert(String::from("disk_type"), String::from("Unknown"));
-                }
             }
             attributes.insert(
                 String::from("disk_is_removable"),

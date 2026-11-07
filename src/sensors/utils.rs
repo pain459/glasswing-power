@@ -7,7 +7,7 @@ use std::io::Error;
 use std::path::PathBuf;
 use std::time::{Duration, SystemTime};
 use sysinfo::{
-    CpuExt, CpuRefreshKind, Pid, Process, ProcessExt, ProcessStatus, System, SystemExt,
+    Components, CpuRefreshKind, Pid, Process, ProcessStatus, System,
     get_current_pid,
 };
 #[cfg(feature = "containers")]
@@ -103,8 +103,8 @@ impl IProcess {
         IProcess {
             pid: process.pid(),
             owner: 0,
-            comm: String::from(process.exe().to_str().unwrap()),
-            cmdline: process.cmd().to_vec(),
+            comm: process.exe().map(|p| p.to_string_lossy().into_owned()).unwrap_or_default(),
+            cmdline: process.cmd().iter().map(|s| s.to_string_lossy().into_owned()).collect(),
             cpu_usage_percentage: process.cpu_usage(),
             memory: process.memory(),
             virtual_memory: process.virtual_memory(),
@@ -120,7 +120,7 @@ impl IProcess {
     /// Returns the command line of related to the process, as found by sysinfo.
     pub fn cmdline(&self, proc_tracker: &ProcessTracker) -> Result<Vec<String>, Error> {
         if let Some(p) = proc_tracker.sysinfo.process(self.pid) {
-            Ok(p.cmd().to_vec())
+            Ok(p.cmd().iter().map(|s| s.to_string_lossy().into_owned()).collect())
         } else {
             Err(Error::other("Failed to get original process."))
         }
@@ -129,7 +129,7 @@ impl IProcess {
     /// Returns the executable string related to the process
     pub fn exe(&self, proc_tracker: &ProcessTracker) -> Result<PathBuf, String> {
         if let Some(p) = proc_tracker.sysinfo.process(self.pid) {
-            Ok(PathBuf::from(p.exe().to_str().unwrap()))
+            Ok(p.exe().map(PathBuf::from).unwrap_or_default())
         } else {
             Err(String::from("Couldn't get process."))
         }
@@ -183,7 +183,7 @@ impl Clone for ProcessTracker {
         ProcessTracker {
             procs: self.procs.clone(),
             max_records_per_process: self.max_records_per_process,
-            sysinfo: System::new_all(),
+            sysinfo: System::new_all().expect("sysinfo not supported on this OS"),
             #[cfg(feature = "containers")]
             regex_cgroup_docker: self.regex_cgroup_docker.clone(),
             #[cfg(feature = "containers")]
@@ -213,7 +213,7 @@ impl ProcessTracker {
         #[cfg(feature = "containers")]
         let regex_cgroup_containerd = Regex::new("/system.slice/containerd.service/.*$").unwrap();
 
-        let mut system = System::new_all();
+        let mut system = System::new_all().expect("sysinfo not supported on this OS");
         system.refresh_cpu_specifics(CpuRefreshKind::everything());
         let nb_cores = system.cpus().len();
 
@@ -232,17 +232,15 @@ impl ProcessTracker {
     }
 
     pub fn refresh(&mut self) {
-        self.sysinfo.refresh_components();
         self.sysinfo.refresh_memory();
-        self.sysinfo.refresh_disks();
-        self.sysinfo.refresh_disks_list();
         self.sysinfo
             .refresh_cpu_specifics(CpuRefreshKind::everything());
     }
 
     pub fn components(&mut self) -> Vec<String> {
         let mut res = vec![];
-        for c in self.sysinfo.components() {
+        let components = Components::new_with_refreshed_list();
+        for c in components.iter() {
             res.push(format!("{c:?}"));
         }
         res
@@ -344,7 +342,8 @@ impl ProcessTracker {
     }
 
     pub fn get_cpu_frequency(&self) -> u64 {
-        self.sysinfo.global_cpu_info().frequency()
+        self.sysinfo.cpus().iter().map(|c| c.frequency()).sum::<u64>()
+            .max(1) / self.sysinfo.cpus().len().max(1) as u64
     }
 
     /// Returns all vectors of process records linked to a running, sleeping, waiting or zombie process.
@@ -617,7 +616,7 @@ impl ProcessTracker {
     }
 
     pub fn get_cpu_usage_percentage(&self, pid: Pid, nb_cores: usize) -> f32 {
-        let cpu_current_usage = self.sysinfo.global_cpu_info().cpu_usage();
+        let cpu_current_usage = self.sysinfo.global_cpu_usage();
         if let Some(p) = self.sysinfo.process(pid) {
             (cpu_current_usage * p.cpu_usage() / 100.0) / nb_cores as f32
         } else {
@@ -716,6 +715,7 @@ impl ProcessTracker {
                         ProcessStatus::Sleep => {}
                         ProcessStatus::Parked => {}
                         ProcessStatus::UninterruptibleDiskSleep => {}
+                        ProcessStatus::Suspended => {}
                         ProcessStatus::Unknown(_code) => {}
                     }
                 } else {
@@ -777,7 +777,7 @@ mod tests {
         // find the cmdline of current proc thanks to sysinfo
         // do the same with processtracker
         // assert
-        let mut system = System::new();
+        let mut system = System::new().expect("sysinfo not supported on this OS");
         system.refresh_all();
         let self_pid_by_sysinfo = get_current_pid();
         let self_process_by_sysinfo = system.process(self_pid_by_sysinfo.unwrap()).unwrap();

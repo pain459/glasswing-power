@@ -1,4 +1,4 @@
-use procfs::KernelStats;
+use procfs::{CurrentSI, KernelStats};
 use std::collections::HashMap;
 use crate::sensors::record::CPUStat;
 
@@ -21,7 +21,7 @@ impl CPUCore {
 
     /// Reads content from /proc/stat and extracts the stats of the CPU core
     pub fn read_stats(&self) -> Option<CPUStat> {
-        if let Ok(mut kernelstats) = KernelStats::new() {
+        if let Ok(mut kernelstats) = KernelStats::current() {
             return Some(CPUStat::from_procfs_cputime(
                 kernelstats.cpu_time.remove(self.id as usize),
             ));
