@@ -3,7 +3,7 @@ use crate::sensors::{
     utils::{IProcess, current_system_time_since_epoch},
 };
 use crate::exporters::metric::{Metric, MetricValueType};
-use chrono::Utc;
+use chrono::{Utc, TimeZone};
 use std::collections::HashMap;
 use crate::exporters::utils;
 use crate::exporters::utils::get_glasswing_power_version;
@@ -76,6 +76,9 @@ pub struct MetricGenerator {
     /// Last time pods state has been checked.
     #[cfg(feature = "containers")]
     pub pods_last_check: String,
+    /// Tracks the cumulative energy (microjoules) at the start of each day.
+    /// Key = "YYYY-MM-DD", Value = cumulative microjoules at day start.
+    pub daily_energy_baseline: std::collections::HashMap<String, u64>,
 }
 
 /// This is not mandatory to use MetricGenerator methods. Exporter can use dedicated
@@ -135,6 +138,7 @@ impl MetricGenerator {
                 watch_kubernetes: true,
                 pods,
                 pods_last_check: String::from(""),
+                daily_energy_baseline: std::collections::HashMap::new(),
                 //kubernetes_version,
             }
         }
@@ -144,6 +148,7 @@ impl MetricGenerator {
             topology,
             hostname,
             qemu: _qemu,
+            daily_energy_baseline: std::collections::HashMap::new(),
         }
     }
 
@@ -380,6 +385,17 @@ impl MetricGenerator {
                 );
             }
 
+            // Compute date and week labels from the record timestamp.
+            let ts_secs = record.timestamp.as_secs() as i64;
+            let dt = chrono::Utc.timestamp(ts_secs, 0);
+            let date_str = dt.format("%Y-%m-%d").to_string();
+            // ISO week: use the %G-%V format (ISO year + ISO week number).
+            let week_str = dt.format("%GW%V").to_string();
+
+            // Add date/week labels to the attributes for the counter.
+            attributes.insert(String::from("date"), date_str.clone());
+            attributes.insert(String::from("week"), week_str.clone());
+
             self.data.push(Metric {
                     name: String::from("scaph_host_energy_microjoules"),
                     metric_type: String::from("counter"),
@@ -392,7 +408,35 @@ impl MetricGenerator {
                     description: String::from(
                         "Energy measurement for the whole host, as extracted from the sensor, in microjoules.",
                     ),
-                    metric_value: MetricValueType::Text(host_energy_microjoules),
+                    metric_value: MetricValueType::Text(host_energy_microjoules.clone()),
+                });
+
+            // Emit a per-day energy gauge: energy consumed today (microjoules).
+            let cumulative_u64: u64 = host_energy_microjoules.parse().unwrap_or(0);
+            let baseline = match self.daily_energy_baseline.get(&date_str) {
+                Some(&b) => b,
+                None => {
+                    // First scrape for this day: use current value as baseline.
+                    self.daily_energy_baseline.insert(date_str.clone(), cumulative_u64);
+                    cumulative_u64
+                }
+            };
+            let daily_energy = cumulative_u64.saturating_sub(baseline);
+
+            let mut daily_attrs = attributes.clone();
+            self.data.push(Metric {
+                    name: String::from("scaph_host_energy_daily_microjoules"),
+                    metric_type: String::from("gauge"),
+                    ttl: 60.0,
+                    timestamp: record.timestamp,
+                    hostname: self.hostname.clone(),
+                    state: String::from("ok"),
+                    tags: vec!["glasswing-power".to_string()],
+                    attributes: daily_attrs,
+                    description: String::from(
+                        "Energy consumed today (since midnight) for the whole host, in microjoules.",
+                    ),
+                    metric_value: MetricValueType::IntUnsigned(daily_energy),
                 });
 
             if let Some(power) = self.topology.get_records_diff_power_microwatts() {
