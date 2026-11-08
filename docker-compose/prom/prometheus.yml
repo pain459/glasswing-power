@@ -36,3 +36,8 @@ scrape_configs:
       - targets: ['glasswing-power:8080']
     fallback_scrape_protocol: PrometheusText0.0.4
 
+  - job_name: 'gpu-power'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['gpu-power-exporter:8082']
+

@@ -19,7 +19,7 @@
         "type": "prometheus",
         "uid": "PDC628E2375F40484"
       },
-      "description": "Instantaneous RAPL reading",
+      "description": "Instantaneous total power (CPU RAPL + GPU)",
       "fieldConfig": {
         "defaults": {
           "decimals": 1,
@@ -71,7 +71,7 @@
             "type": "prometheus",
             "uid": "PDC628E2375F40484"
           },
-          "expr": "scaph_host_power_microwatts / 1000000",
+          "expr": "sum(scaph_host_power_microwatts / 1000000) + sum(nvidia_gpu_power_watts)",
           "refId": "A"
         }
       ],
@@ -135,7 +135,7 @@
             "type": "prometheus",
             "uid": "PDC628E2375F40484"
           },
-          "expr": "scaph_host_power_microwatts / 1000000 * 9 / 1000",
+          "expr": "(sum(scaph_host_power_microwatts / 1000000) + sum(nvidia_gpu_power_watts)) * 9 / 1000",
           "refId": "A"
         }
       ],
@@ -199,7 +199,7 @@
             "type": "prometheus",
             "uid": "PDC628E2375F40484"
           },
-          "expr": "scaph_host_power_microwatts / 1000000 * 9 / 1000 / 94.66",
+          "expr": "(sum(scaph_host_power_microwatts / 1000000) + sum(nvidia_gpu_power_watts)) * 9 / 1000 / 94.66",
           "refId": "A"
         }
       ],
@@ -452,7 +452,7 @@
             "type": "prometheus",
             "uid": "PDC628E2375F40484"
           },
-          "expr": "avg_over_time(scaph_host_power_microwatts[1d]) / 1000000",
+          "expr": "sum(avg_over_time(scaph_host_power_microwatts[1d])) / 1000000 + sum(avg_over_time(nvidia_gpu_power_watts[1d]))",
           "refId": "A"
         }
       ],
@@ -508,7 +508,7 @@
             "type": "prometheus",
             "uid": "PDC628E2375F40484"
           },
-          "expr": "scaph_host_power_microwatts / 1000000",
+          "expr": "sum(scaph_host_power_microwatts / 1000000) + sum(nvidia_gpu_power_watts)",
           "refId": "A"
         }
       ],
@@ -576,7 +576,7 @@
             "type": "prometheus",
             "uid": "PDC628E2375F40484"
           },
-          "expr": "scaph_host_power_microwatts / 1000000 * 9 / 1000",
+          "expr": "(sum(scaph_host_power_microwatts / 1000000) + sum(nvidia_gpu_power_watts)) * 9 / 1000",
           "refId": "A"
         }
       ],
@@ -631,7 +631,7 @@
             "type": "prometheus",
             "uid": "PDC628E2375F40484"
           },
-          "expr": "scaph_host_power_microwatts / 1000000 * 24 * 9 / 1000",
+          "expr": "(sum(scaph_host_power_microwatts / 1000000) + sum(nvidia_gpu_power_watts)) * 24 * 9 / 1000",
           "refId": "A"
         }
       ],
@@ -686,7 +686,7 @@
             "type": "prometheus",
             "uid": "PDC628E2375F40484"
           },
-          "expr": "scaph_host_power_microwatts / 1000000 * 168 * 9 / 1000",
+          "expr": "(sum(scaph_host_power_microwatts / 1000000) + sum(nvidia_gpu_power_watts)) * 168 * 9 / 1000",
           "refId": "A"
         }
       ],
@@ -741,7 +741,7 @@
             "type": "prometheus",
             "uid": "PDC628E2375F40484"
           },
-          "expr": "scaph_host_power_microwatts / 1000000 * 720 * 9 / 1000",
+          "expr": "(sum(scaph_host_power_microwatts / 1000000) + sum(nvidia_gpu_power_watts)) * 720 * 9 / 1000",
           "refId": "A"
         }
       ],
@@ -796,7 +796,7 @@
             "type": "prometheus",
             "uid": "PDC628E2375F40484"
           },
-          "expr": "scaph_host_power_microwatts / 1000000 * 8760 * 9 / 1000",
+          "expr": "(sum(scaph_host_power_microwatts / 1000000) + sum(nvidia_gpu_power_watts)) * 8760 * 9 / 1000",
           "refId": "A"
         }
       ],
@@ -851,7 +851,7 @@
             "type": "prometheus",
             "uid": "PDC628E2375F40484"
           },
-          "expr": "scaph_host_power_microwatts / 1000000 * 9 / 1000 / 94.66",
+          "expr": "(sum(scaph_host_power_microwatts / 1000000) + sum(nvidia_gpu_power_watts)) * 9 / 1000 / 94.66",
           "refId": "A"
         }
       ],
@@ -906,7 +906,7 @@
             "type": "prometheus",
             "uid": "PDC628E2375F40484"
           },
-          "expr": "scaph_host_power_microwatts / 1000000 * 24 * 9 / 1000 / 94.66",
+          "expr": "(sum(scaph_host_power_microwatts / 1000000) + sum(nvidia_gpu_power_watts)) * 24 * 9 / 1000 / 94.66",
           "refId": "A"
         }
       ],
@@ -961,7 +961,7 @@
             "type": "prometheus",
             "uid": "PDC628E2375F40484"
           },
-          "expr": "scaph_host_power_microwatts / 1000000 * 720 * 9 / 1000 / 94.66",
+          "expr": "(sum(scaph_host_power_microwatts / 1000000) + sum(nvidia_gpu_power_watts)) * 720 * 9 / 1000 / 94.66",
           "refId": "A"
         }
       ],
@@ -1513,6 +1513,198 @@
         }
       ],
       "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PDC628E2375F40484"
+      },
+      "description": "GPU power draw from nvidia-smi",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 200
+              },
+              {
+                "color": "red",
+                "value": 400
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 1
+      },
+      "id": 100,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PDC628E2375F40484"
+          },
+          "expr": "nvidia_gpu_power_watts",
+          "refId": "A"
+        }
+      ],
+      "title": "GPU Power",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PDC628E2375F40484"
+      },
+      "description": "GPU utilization percentage",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 0,
+        "y": 6
+      },
+      "id": 101,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PDC628E2375F40484"
+          },
+          "expr": "nvidia_gpu_utilization_percent",
+          "refId": "A"
+        }
+      ],
+      "title": "GPU Utilization",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PDC628E2375F40484"
+      },
+      "description": "GPU memory used / total",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "mbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 6
+      },
+      "id": 102,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PDC628E2375F40484"
+          },
+          "expr": "nvidia_gpu_memory_used_mib",
+          "refId": "A"
+        }
+      ],
+      "title": "GPU Memory Used",
+      "type": "stat"
     }
   ],
   "refresh": "15s",

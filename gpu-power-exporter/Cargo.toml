@@ -1,0 +1,21 @@
+[package]
+name = "gpu-power-exporter"
+version = "1.0.0"
+edition = "2024"
+description = "Prometheus exporter for NVIDIA GPU power, utilization, and memory metrics"
+license = "MIT"
+
+[[bin]]
+name = "gpu-power-exporter"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "net"] }
+hyper = { version = "1", features = ["server", "http1"] }
+hyper-util = { version = "0.1", features = ["tokio"] }
+http-body-util = "0.1"
+bytes = "1"
+log = "0.4"
+loggerv = "0.7"
+colored = "3"
