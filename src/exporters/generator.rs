@@ -385,16 +385,19 @@ impl MetricGenerator {
                 );
             }
 
-            // Compute date and week labels from the record timestamp.
+            // Compute date/week/month/year labels from the record timestamp.
             let ts_secs = record.timestamp.as_secs() as i64;
             let dt = chrono::Utc.timestamp(ts_secs, 0);
             let date_str = dt.format("%Y-%m-%d").to_string();
-            // ISO week: use the %G-%V format (ISO year + ISO week number).
             let week_str = dt.format("%GW%V").to_string();
+            let month_str = dt.format("%Y-%m").to_string();
+            let year_str = dt.format("%Y").to_string();
 
-            // Add date/week labels to the attributes for the counter.
+            // Add date/week/month/year labels to the attributes for the counter.
             attributes.insert(String::from("date"), date_str.clone());
             attributes.insert(String::from("week"), week_str.clone());
+            attributes.insert(String::from("month"), month_str.clone());
+            attributes.insert(String::from("year"), year_str.clone());
 
             self.data.push(Metric {
                     name: String::from("scaph_host_energy_microjoules"),
